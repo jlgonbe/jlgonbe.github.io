@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top-navbar" style="background-color: #ffccb3;">
+    <nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top-navbar background-salmon">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -27,90 +27,253 @@
                     <a class="nav-link" href="index.html"><i class="fa fa-home" aria-hidden="true"></i>&nbsp; Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="contact.html"><i class="fa fa-address-card-o" aria-hidden="true"></i>&nbsp; Contact</a>
+                    <a class="nav-link" href="#"><i class="fa fa-address-card-o" aria-hidden="true"></i>&nbsp; Contact</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="about-me.html"><i class="fa fa-user-o" aria-hidden="true"></i>&nbsp; About me</a>
+                    <a class="nav-link" href="#"><i class="fa fa-user-o" aria-hidden="true"></i>&nbsp; About me</a>
                 </li>
             </ul>
             <span class="navbar-text">My awesome CV</span>
         </div>
     </nav>
-    <div class="jumbotron jumbotron-fluid html-img-background">
+
+    <div class="jumbotron jumbotron-fluid user-header userprofile social">
         <div class="container">
-            <h1 class="display-3">José Luis González Beltrán</h1>
+            <div class="userpic">
+                <img src="./img/user-jgb.png" alt="" class="userpicimg">
+            </div>
+            <h1 class="display-4">José Luis González Beltrán</h1>
             <p>&nbsp;</p>
-            <p class="lead">This is some personal description I will update.</p>
+            <p class="lead">
+                Licenciado en Ingeniería Técnica en Informática de Sistemas, para posteriormente realizar un Professional MBA (Master in
+                Business Administration).
+            </p>
+            <p class="lead">
+                Actualmente trabajo como Programador Senior en Digital Takers. Anteriormente he estado trabajado como Programador Senior
+                Java en Hiberus Tecnología y en Hewlett-Packard Enterprise y como Becario Programador SAP en DxD Applications
+                & IT Solutions, empresa perteneciente a la red internacional Deloitte Touche Tohmatsu.
+            </p>
         </div>
     </div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12 col-md-8 column">
-                <div class="card no-border">
+                <div class="card border-top-light-blue">
                     <div class="card-block">
                         <h2 class="card-title">Experiencia laboral</h2>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-block">
-                        <h3 class="card-title">Senior Java Developer - <a href="http://www.digitaltakers.com/" target="_blank">Digital Takers</a></h3>
-                        <h6 class="card-subtitle mb-2 text-muted">mar. de 2017 – actualidad</h6>
-                        <h6 class="card-subtitle mb-2 text-muted">Zaragoza y alrededores, España</h6>
-                        <hr>
-                        <p class="card-text">
-                            ...
-                        </p>
-                        <div class="text-left">
-                            <small>
+                        <div data-toggle="collapse" href="#collapse-dt">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <h3 class="card-title">Senior Java Developer - <a href="http://www.digitaltakers.com/" target="_blank">Digital Takers</a></h3>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        <i class="fa fa-calendar" aria-hidden="true"></i>&nbsp; mar. de 2017 – actualidad
+                                    </h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        <i class="fa fa-globe" aria-hidden="true"></i>&nbsp; Zaragoza y alrededores, España
+                                    </h6>
+                                </div>
+                                <div class="col-md-2 text-right">
+                                    <i class="fa fa-chevron-down fa-2x" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="collapse-dt" class="collapse description">
+                            <div>
+                                <p class="card-text">
+                                    <h6>Proyectos:</h6>
+                                    <strong>** Adidas BAM2 (Business Analizer Monitor 2) **</strong><br> Tecnologías utilizadas:<br>
+                                    <ul>
+                                        <li>Java</li>
+                                        <li>Storm</li>
+                                        <li>Kafka</li>
+                                        <li>Elasticsearch</li>
+                                        <li>Junit & Mockito</li>
+                                        <li>Spring</li>
+                                        <li>Web Services REST</li>
+                                    </ul>
+                                </p>
+                            </div>
+                            <div class="text-left">
+                                <small>
                                 <a href="http://www.digitaltakers.com/" target="_blank" class="card-link">Digital Takers</a>
                             </small>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-block">
-                        <h3 class="card-title">Senior Java Developer - <a href="#" target="_blank">Hiberus Tecnología</a></h3>
-                        <h6 class="card-subtitle mb-2 text-muted">jul. de 2016 – mar. de 2017 | 9 meses</h6>
-                        <h6 class="card-subtitle mb-2 text-muted">Calle del Pintor Pablo Ruiz Picasso, 61D · 1ª Planta – Oficina G</h6>
-                        <hr>
-                        <p class="card-text">
-                            ...
-                        </p>
-                        <div class="text-left">
-                            <small>
-                                <a href="#" target="_blank" class="card-link">Hiberus Tecnología</a>
+                        <div data-toggle="collapse" href="#collapse-hiberus">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <h3 class="card-title">Senior Java Developer - <a href="https://www.hiberus.com/" target="_blank">Hiberus Tecnología</a></h3>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        <i class="fa fa-calendar" aria-hidden="true"></i>&nbsp; jul. de 2016 – mar. de 2017
+                                        | 9 meses
+                                    </h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        <i class="fa fa-globe" aria-hidden="true"></i>&nbsp; Calle del Pintor Pablo Ruiz
+                                        Picasso, 61D · 1ª Planta – Oficina G
+                                    </h6>
+                                </div>
+                                <div class="col-md-2 text-right">
+                                    <i class="fa fa-chevron-down fa-2x" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="collapse-hiberus" class="collapse description">
+                            <div>
+                                <p class="card-text">
+                                    <h6>Proyectos:</h6>
+                                    <strong>** Gestión del ICA, Gobierno de Aragón **</strong><br> Tecnologías utilizadas:<br>
+                                    <ul>
+                                        <li>Spring</li>
+                                        <li>Hibernate</li>
+                                        <li>Primefaces</li>
+                                    </ul>
+                                    <strong>** Integraciones entre sistemas para Carreras Grupo Logístico **</strong><br>                                    Tecnologías utilizadas:
+                                    <br>
+                                    <ul>
+                                        <li>Java 8</li>
+                                        <li>Junit & Mockito</li>
+                                        <li>JPA & Hibernate</li>
+                                        <li>Docker</li>
+                                    </ul>
+                                </p>
+                            </div>
+                            <div class="text-left">
+                                <small>
+                                <a href="https://www.hiberus.com/" target="_blank" class="card-link">Hiberus Tecnología</a>
                             </small>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-block">
-                        <h3 class="card-title">Senior Web / JavaEE Developer - <a href="#" target="_blank">Hewlett Packard Enterprise</a></h3>
-                        <h6 class="card-subtitle mb-2 text-muted">jul. de 2014 – jul. de 2016 | 2 años y 1 mes</h6>
-                        <h6 class="card-subtitle mb-2 text-muted">C/ Bari 11-13 - Edificio A - Planta 2, 50197, Zaragoza, España</h6>
-                        <hr>
-                        <p class="card-text">
-                            ...
-                        </p>
-                        <div class="text-left">
-                            <small>
-                                <a href="#" target="_blank" class="card-link">Hewlett Packard Enterprise</a>
+                        <div data-toggle="collapse" href="#collapse-hp">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <h3 class="card-title">Senior Web / JavaEE Developer - <a href="https://www.hpe.com/es/es/home.html" target="_blank">Hewlett Packard Enterprise</a></h3>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        <i class="fa fa-calendar" aria-hidden="true"></i>&nbsp; jul. de 2014 – jul. de 2016
+                                        | 2 años y 1 mes
+                                    </h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        <i class="fa fa-globe" aria-hidden="true"></i>&nbsp; C/ Bari 11-13 - Edificio A -
+                                        Planta 2, 50197, Zaragoza, España
+                                    </h6>
+                                </div>
+                                <div class="col-md-2 text-right">
+                                    <i class="fa fa-chevron-down fa-2x" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="collapse-hp" class="collapse description">
+                            <div>
+                                <p class="card-text">
+                                    <h6>Proyectos:</h6>
+                                    <ul>
+                                        <li>Desarrollo de la parte de procesos de la <a href="https://www.racc.es/home" target="_blank">Nueva Web Comercial de RACC</a>.</li>
+                                        <li>Desarrollo de nuevas funcionalidades para el portal web de Banco Sabadell.</li>
+                                        <li>Creación del panel de gestión de metadatos para el BI para Idescat.</li>
+                                        <li>Integración mediante adaptación a interfaz UNICA de Salesforce con sistemas de terceros
+                                            para Telefónica.
+                                        </li>
+                                    </ul>
+
+                                    Como Programador Java y FrontEnd he utilizado las siguientes tecnologías:<br>
+                                    <ul>
+                                        <li>J2EE</li>
+                                        <li>Spring</li>
+                                        <li>Struts 2</li>
+                                        <li>JSP</li>
+                                        <li>Web Services REST / SOAP</li>
+                                        <li>JavaScript / jQuery</li>
+                                        <li>AngularJS 1.3 & 1.5</li>
+                                        <li>HTML + CSS</li>
+                                        <li>Bootstrap</li>
+                                        <li>Oracle WebCenter Sites (gestor de contenido / CMS)</li>
+                                        <li>FatWire</li>
+                                        <li>Saleforce</li>
+                                        <li>Apex</li>
+                                    </ul>
+                                </p>
+                            </div>
+                            <div class="text-left">
+                                <small>
+                                <a href="https://www.hpe.com/es/es/home.html" target="_blank" class="card-link">Hewlett Packard Enterprise</a>
                             </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-block">
+                        <div data-toggle="collapse" href="#collapse-deloitte">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <h3 class="card-title">SAP Intern Developer - <a href="https://www2.deloitte.com/es/es.html" target="_blank">Deloitte España</a></h3>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        <i class="fa fa-calendar" aria-hidden="true"></i>&nbsp; jun. de 2013 – jun. de 2014
+                                        | 1 año y 1 mes
+                                    </h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        <i class="fa fa-globe" aria-hidden="true"></i>&nbsp; Pt. Walqa. ctra nº-333 km 566
+                                        - 22197 Cuarte. Huesca, Edif. Félix de Azara
+                                    </h6>
+                                </div>
+                                <div class="col-md-2 text-right">
+                                    <i class="fa fa-chevron-down fa-2x" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="collapse-deloitte" class="collapse description">
+                            <div>
+                                <p class="card-text">
+                                    <h6>Proyectos para la empresa Correos y Telégrafos de España:</h6>
+                                    <ul>
+                                        <li>Proyecto Upgrade de CRM, implantado con éxito.</li>
+                                        <li>Proyecto AMO, mantenimiento y desarrollo de evolutivosl.</li>
+                                    </ul>
+                                    Funciones como Becario Programador SAP:<br>
+                                    <ul>
+                                        <li>Programación ABAP IV y ABAP OO.</li>
+                                        <li>Certificación de código, adaptación a estándares impuestos por Correos.</li>
+                                        <li>Documentación, documentos técnicos y manuales de uso.</li>
+                                        <li>Ciclos de pruebas, testing de los diferentes desarrollos.</li>
+                                    </ul>
+                                </p>
+                            </div>
+                            <div class="text-left">
+                                <small>
+                                <a href="https://www2.deloitte.com/es/es.html" target="_blank" class="card-link">Deloitte España</a>
+                            </small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-sm-12 col-md-4 column">
-                <div class="card no-border">
+                <div class="card border-top-light-blue">
                     <div class="card-block">
                         <h2 class="card-title">Educación</h2>
                     </div>
                 </div>
                 <div class="card card-no-border">
                     <div class="card-block">
-                        <h6 class="card-subtitle date">2006/2007 - 2010/2011</h6>
+                        <h6 class="card-subtitle date">2011 - 2012</h6>
+                        <h5 class="card-subtitle mb-2 text-muted">Professional MBA</h5>
+                        <h6 class="card-subtitle">CESTE, Escuela Internacional de Negocios</h6>
+                    </div>
+                    <div class="card-block">
+                        <h6 class="card-subtitle date">2007 - 2011</h6>
                         <h5 class="card-subtitle mb-2 text-muted">Ingeniería Técnica en Informática de Sistemas</h5>
-                        <h5 class="card-subtitle">Escuela Universitaria Politécnica de La Almunia</h5>
+                        <h6 class="card-subtitle">Escuela Universitaria Politécnica de La Almunia</h6>
                     </div>
                 </div>
                 <div class="card">
@@ -135,28 +298,30 @@
     <div class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-xs-12 col-md-4">
-                    <i class="fa fa-user-o fa-2x" aria-hidden="true"></i>&nbsp; José Luis González Beltrán
-                </div>
-                <div class="col-xs-12 col-md-4">
-                    <a href="https://twitter.com/_jgb_" target="_blank" class="social-link twitter">
-                        <i class="fa fa-twitter fa-2x" aria-hidden="true"></i>&nbsp; @_jgb_
+                <div class="col-xs-12 col-md-4 text-center">
+                    <a href="https://about.me/JGB11" target="_blank" class="social-link about-me">
+                        <i class="sprite sprite-avatar" aria-hidden="true"></i>&nbsp; José Luis González Beltrán
                     </a>
                 </div>
-                <div class="col-xs-12 col-md-4">
+                <div class="col-xs-12 col-md-4 text-center">
+                    <a href="https://twitter.com/_jgb_" target="_blank" class="social-link twitter">
+                        <i class="sprite sprite-twitter" aria-hidden="true"></i>&nbsp; @_jgb_
+                    </a>
+                </div>
+                <div class="col-xs-12 col-md-4 text-center">
                     <a href="https://www.linkedin.com/in/jgb11/" target="_blank" class="social-link linkedin">
-                        <i class="fa fa-linkedin fa-2x" aria-hidden="true"></i>&nbsp; jgb11
+                        <i class="sprite sprite-linkedin" aria-hidden="true"></i>&nbsp; jgb11
                     </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse" style="background-color: #ffccb3;">
+    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
         <div class="container">
-            <span class="navbar-text">
-                &copy; José Luis González Beltrán 2017
-            </span>
+            <div class="col text-center">
+                <span class="navbar-text">&copy; José Luis González Beltrán 2017</span>
+            </div>
         </div>
     </nav>
 
