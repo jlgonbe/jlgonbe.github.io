@@ -11,6 +11,10 @@ a:hover {
     text-decoration: none;
     color: #3498db;
 }
+
+a:visited {
+    text-decoration: none;
+}
  
 /* #### User #### */
 .user-header {
