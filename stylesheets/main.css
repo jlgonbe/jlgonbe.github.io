@@ -1,0 +1,14 @@
+/* Navigation bar styling */
+.page-header nav {
+    margin-top: 1rem;
+}
+
+.page-header nav a {
+    color: #fff;
+    font-weight: bold;
+    margin: 0 0.5rem;
+}
+
+.page-header nav a:hover {
+    text-decoration: underline;
+}
