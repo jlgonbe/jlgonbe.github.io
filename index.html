@@ -1,29 +1,92 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="UTF-8">
-    <title>jlgonbe.github.io by jlgonbe</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/main.css" media="screen">
-  </head>
-  <body>
-    <section class="page-header">
-      <h1 class="project-name">jlgonbe.github.io</h1>
-      <h2 class="project-tagline"></h2>
-      <nav>
-        <a href="https://about.me/jlgonbe">About Me</a> |
-        <a href="https://bitacoradeuningenierodesoftware.substack.com/">Bitácora de un Ingeniero de Software</a>
-      </nav>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>J.L. González Beltrán - Ingeniero y Triatleta</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Serif:wght@400;600&family=Inter:wght@400;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script defer src="assets/js/main.js"></script>
+</head>
+
+<body>
+  <header class="header">
+    <img src="assets/images/profile.jpg" alt="José Luis González Beltrán" class="profile-image">
+    <h1 class="main-title highlight">Soy José Luis</h1>
+    <p class="subtitle">Ingeniero. Triatleta. Aprendiz constante.</p>
+    <p class="tagline">Construyo con sentido, entreno con método y vivo con propósito.</p>
+  </header>
+
+  <main class="main-content">
+
+    <section class="section">
+      <h2 class="section-title">Lo que hago</h2>
+      <div class="grid grid-cols-1 md-grid-cols-3">
+        <div class="card">
+          <h3 class="card-title">Ingeniería con criterio</h3>
+          <p class="card-description-grow">Diseño sistemas que funcionan, con foco en claridad, eficiencia y sostenibilidad técnica.</p>
+        </div>
+        <div class="card">
+          <h3 class="card-title">Triatlón como filosofía</h3>
+          <p class="card-description-grow">Entrenar cada día es practicar la constancia, el enfoque y la superación personal.</p>
+        </div>
+        <div class="card">
+          <h3 class="card-title">Aprendizaje constante</h3>
+          <p class="card-description-grow">Leo, pruebo, comparto. Desde IA y productividad hasta estoicismo y finanzas personales.</p>
+        </div>
+      </div>
     </section>
 
-    <section class="main-content">
-      <footer class="site-footer">
-        <span class="site-footer-credits">&copy; José Luis González Beltrán 2025</span>
-      </footer>
+    <section class="section">
+      <h2 class="section-title">Proyectos y contenidos</h2>
+      <div class="grid grid-cols-1 md-grid-cols-2">
+        <div class="card">
+          <h3 class="card-title">Bitácora de un Ingeniero de Software</h3>
+          <p class="card-description">Reflexiones sobre software, liderazgo técnico y crecimiento profesional.</p>
+          <div id="substack-posts" class="card-content">
+            <!-- El contenido se carga dinámicamente -->
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="card-title">Triatlón en Instagram</h3>
+          <p class="card-description">Mis entrenamientos, carreras y progresos compartidos de forma real y transparente.</p>
+          <div id="instagram-content" class="instagram-content">
+              <a href="https://www.instagram.com/jlgonbe" target="_blank" rel="noopener" class="instagram-btn">
+                <img src="assets/icons/instagram-logo.png" alt="Instagram" class="instagram-icon">
+                <span class="instagram-text">Ver entrenamientos →</span>
+              </a>
+              <p class="instagram-caption">Últimas actualizaciones</p>
+          </div>
+        </div>
+      </div>
     </section>
-  </body>
+
+    <section class="section">
+      <h2 class="section-title">Conecta conmigo</h2>
+      <div class="social-icons">
+        <a href="https://x.com/jlgonbe" target="_blank" rel="noopener" aria-label="X" class="social-icon x-icon">
+          <img src="assets/icons/x-logo.png" alt="X">
+        </a>
+        <a href="https://www.linkedin.com/in/jlgonbe" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon linkedin-icon">
+          <img src="assets/icons/linkedin-logo.png" alt="LinkedIn">
+        </a>
+        <a href="https://substack.com/@jlgonbe" target="_blank" rel="noopener" aria-label="Substack" class="social-icon substack-icon">
+          <img src="assets/icons/substack-logo.png" alt="Substack">
+        </a>
+        <a href="https://github.com/jlgonbe" target="_blank" rel="noopener" aria-label="GitHub" class="social-icon github-icon">
+          <img src="assets/icons/github-logo.png" alt="GitHub">
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    © 2025 J.L. González Beltrán — Construyendo con intención
+  </footer>
+</body>
+
 </html>
