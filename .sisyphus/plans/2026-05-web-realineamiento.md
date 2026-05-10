@@ -209,3 +209,93 @@ Reemplazar las 2 cards actuales ("Bitácora / Triatlón en Instagram") por 2 fre
 - Mantener compatibilidad con GitHub Pages (sin build step si es posible — si se necesita, considerar GitHub Actions con Eleventy/Astro mínimo).
 - Branch de trabajo: `feature/realineamiento-marca-2026`.
 - Cada fase = PR separado para revisar antes de merge a `main`.
+
+---
+
+## Sub-fase B.2 — Refinamiento visual Bitácora + suscripción multi-punto (solicitado 2026-05-10 tras merge PR #2)
+
+### Origen
+Petición del usuario tras revisar Sub-fase B en local:
+> "Quiero añadir botones de suscripción a la newsletter (iframe Substack), ajustar el estilo visual de la parte de la Bitácora para que sea consistente con la landing https://revisar-codigo-ia.bitacoradeuningenierodesoftware.com/, y que el link 'leer más' a Substack abra `bitacoradeuningenierodesoftware.com` en pestaña nueva."
+
+### Página de referencia — tokens de diseño extraídos
+Fuente: `https://revisar-codigo-ia.bitacoradeuningenierodesoftware.com/_astro/Footer.C7c0shAu.css`
+
+**Paleta:**
+- `--color-bg: #f4f1e1` (crema cálido, fondo principal)
+- `--color-bg-alt: #ffffff`
+- `--color-bg-soft: #faf8ef`
+- `--color-ink: #1a1a1a` (texto principal)
+- `--color-ink-soft: #4a4a4a`
+- `--color-ink-muted: #6b6b6b`
+- `--color-line: #e6e1cf` (bordes, ring)
+- `--color-accent: #3e8e41` (verde botón/acento)
+- `--color-accent-hover: #2f6f32`
+- `--color-accent-soft: #f1f8f1` (badge background)
+- `--color-warm: #e8a87c` (acento cálido secundario)
+
+**Tipografía:**
+- Sans (cuerpo): `Inter` (400/500/600/700)
+- Serif (titulares): `Lora` (500/600/700, también italic 500)
+- Mono: stack del sistema
+
+**Sombras y radios:**
+- `--shadow-card: 0 1px 2px #1a1a1a0a, 0 4px 12px #1a1a1a0f`
+- `--shadow-cta: 0 2px 8px #3e8e4140`
+- `--radius-md: 0.375rem` (botones, inputs)
+- `--radius-xl: 0.75rem` (cards)
+- `--radius-2xl: 1rem`
+
+**Patrones visuales clave:**
+- Badges tipo "eyebrow": `bg-accent-soft`, texto `accent`, `uppercase`, `tracking-wide`, `rounded-full`.
+- Cards con `border-l-4 border-accent` (igual que avatar-cards actuales pero con el verde de marca, no `#9AC8E2`).
+- Banda CTA final con `bg: var(--color-ink)` (negro #1a1a1a) + texto blanco + acento `--color-warm` para destacar palabras.
+- Hover en accent: cambio a `accent-hover` con transición.
+
+### Cambios concretos a implementar
+
+1. **Aplicar paleta+tipografía Bitácora** (alcance a confirmar — ver Decisiones):
+   - Importar `Lora` desde Google Fonts (ya está `Inter`).
+   - Definir CSS variables `--bitacora-*` en `:root` con los tokens de arriba.
+   - Aplicar a la sección `#bitacora`: fondo `--color-bg` (crema), titulares en `Lora`, body en `Inter`.
+   - Avatar-cards: cambiar `border-left: 4px solid #9AC8E2` → `border-left: 4px solid var(--bitacora-accent)`.
+   - Eyebrow `bitacora-eyebrow`: estilo badge (pill con `bg-accent-soft` + texto verde).
+
+2. **Botones/puntos de suscripción adicionales**:
+   - Mantener iframe actual dentro de `#bitacora`.
+   - Añadir banda CTA final estilo "banda oscura" antes del footer-manifesto (a confirmar nº de puntos — ver Decisiones).
+   - Cada iframe usa exactamente: `<iframe src="https://bitacoradeuningenierodesoftware.substack.com/embed?transparent=1" width="480" height="320" style="border: 0; background: transparent" frameborder="0" scrolling="no" loading="lazy"></iframe>`.
+   - Responsive: `width: 100%; max-width: 480px;` en mobile (ya implementado en Sub-fase B).
+
+3. **Enlace "leer más" a Substack**:
+   - URL destino: `https://bitacoradeuningenierodesoftware.com` (a verificar redirección — ver Decisiones).
+   - Atributos: `target="_blank" rel="noopener noreferrer"`.
+   - Texto sugerido: "Leer más en la Bitácora →" (a confirmar copy).
+   - Ubicación: en el bloque de últimas entradas + en la banda CTA final.
+
+### Decisiones confirmadas (2026-05-10)
+
+| # | Pregunta | Decisión | Notas |
+|---|----------|----------|-------|
+| 1 | **Alcance del rediseño visual** | **A — Solo `#bitacora`** | Contraste claro entre identidad personal (paleta actual azul) y activo Bitácora (paleta cálida editorial). Preserva trabajo Sub-fase B en hero/Otros frentes/footer. |
+| 2 | **Cuántos puntos de suscripción adicionales** | **A — +1 banda CTA final** (total 2 iframes) | Iframe actual dentro de `#bitacora` + nueva banda oscura `bg: #1a1a1a` + texto blanco + iframe antes del `footer-manifesto`. |
+| 3 | **URL canónica "leer más"** | **A — `https://bitacoradeuningenierodesoftware.com`** | Verificado 2026-05-10: redirige 301 → `https://bitacoradeuningenierodesoftware.substack.com/`. Seguro hardcodear el dominio custom. |
+| 4 | **Copy banda CTA final** | **B — variante paralelismo con landing** | "Te llega al email. Sin spam. Cuando quieras te das de baja." (estilo directo de la referencia, voz Bitácora). |
+| 5 | **Conservar `--color-accent: #9AC8E2`** fuera de `#bitacora` | **A — Paleta actual intacta** fuera de Bitácora | Coherente con decisión 1A. CSS variables `--bitacora-*` namespaceadas para no contaminar el resto. |
+| 6 | **Rama destino** | **Nueva rama `feature/realineamiento-marca-2026-fase-b2` desde master** | PR #2 mergeada (`f9756d7`). Master sincronizado. Nueva PR #3 al terminar. |
+
+### Tareas de ejecución (tras resolver decisiones)
+1. Confirmar redirección `bitacoradeuningenierodesoftware.com` con `curl -I` (decisión 3).
+2. Importar Google Font `Lora` en `<head>` de `index.html`.
+3. Definir CSS variables `--bitacora-*` en `style.css` (paleta crema/verde + sombras).
+4. Reescribir estilos `#bitacora`: fondo crema, titulares `Lora`, eyebrow tipo badge, avatar-cards con `border-l-4` verde, sombras suaves.
+5. Implementar nº puntos de suscripción decidido (banda CTA final con `bg: --color-ink` negro + texto blanco + iframe).
+6. Añadir bloque "leer más en la Bitácora" con enlace `target="_blank"` a la URL acordada.
+7. Smoke test + render headless 320/375/1280px + validación visual con `look_at`.
+8. Commit + push + PR Sub-fase B.2 (rama nueva desde `master` actualizado tras merge PR #2).
+
+### Riesgos / consideraciones
+- **Mezclar 2 paletas en una página** puede sentirse incoherente si la transición no es deliberada. Mitigación: separador visual claro (cambio de fondo) entre hero y `#bitacora`, y entre `#bitacora` y "Otros frentes".
+- **Cargar 2 iframes Substack** añade peso (~2 requests externas a substack.com). Aceptable: ambos `loading="lazy"`.
+- **Lora desde Google Fonts** añade ~30 KB. Aceptable: una sola familia, pesos limitados.
+- **URL `bitacoradeuningenierodesoftware.com`** podría no estar configurada todavía; si falla, fallback a `.substack.com`.
