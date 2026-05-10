@@ -1,0 +1,13 @@
+{
+  "name": "J.L. González Beltrán",
+  "short_name": "JL González",
+  "description": "Ingeniero. Triatleta. Aprendiz constante. Construyo con sentido, entreno con método y vivo con propósito.",
+  "icons": [
+    { "src": "/assets/favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/favicon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#1F3B4D",
+  "background_color": "#E5E7EB",
+  "display": "browser",
+  "start_url": "/"
+}

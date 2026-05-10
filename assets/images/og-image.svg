@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1F3B4D"/>
+      <stop offset="100%" stop-color="#0E1E29"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <line x1="80" y1="120" x2="200" y2="120" stroke="#9AC8E2" stroke-width="3"/>
+  <text x="80" y="270" font-family="Georgia, 'IBM Plex Serif', serif" font-size="64" font-weight="700" fill="#E5E7EB">
+    J.L. González Beltrán
+  </text>
+  <text x="80" y="350" font-family="Georgia, 'IBM Plex Serif', serif" font-size="36" font-weight="400" fill="#9AC8E2" font-style="italic">
+    Ingeniero. Triatleta. Aprendiz constante.
+  </text>
+  <text x="80" y="460" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="28" font-weight="400" fill="#E5E7EB" opacity="0.85">
+    Construyo con sentido, entreno con método
+  </text>
+  <text x="80" y="500" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="28" font-weight="400" fill="#E5E7EB" opacity="0.85">
+    y vivo con propósito.
+  </text>
+  <text x="80" y="580" font-family="Menlo, 'IBM Plex Mono', monospace" font-size="20" font-weight="400" fill="#9AC8E2">
+    jlgonbe.github.io
+  </text>
+</svg>
