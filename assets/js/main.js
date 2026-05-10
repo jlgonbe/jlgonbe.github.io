@@ -1,105 +1,103 @@
-// Configuración para GitHub Pages
-const substackUsername = "bitacoradeuningenierodesoftware";
-const instagramUsername = "jlgonbe";
+const SUBSTACK_USERNAME = "bitacoradeuningenierodesoftware";
+const FEED_URL = `https://${SUBSTACK_USERNAME}.substack.com/feed`;
+const PROXY_URL = `https://api.allorigins.win/get?url=${encodeURIComponent(FEED_URL)}`;
+const REQUEST_TIMEOUT_MS = 10_000;
+const MAX_POSTS = 3;
 
-// Función para cargar las publicaciones de Substack
-async function loadSubstackPosts() {
-    const container = document.getElementById("substack-posts");
-    
-    if (!container) {
-        console.warn("Container 'substack-posts' not found");
-        return;
+async function fetchWithTimeout(url, { timeout = REQUEST_TIMEOUT_MS, ...options } = {}) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeout);
+    try {
+        return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
+function formatDate(pubDate) {
+    if (!pubDate) return "";
+    const date = new Date(pubDate);
+    if (Number.isNaN(date.getTime())) return "";
+    return date.toLocaleDateString("es-ES", { year: "numeric", month: "short", day: "numeric" });
+}
+
+function renderPost(container, item) {
+    const title = item.querySelector("title")?.textContent?.trim();
+    const link = item.querySelector("link")?.textContent?.trim();
+    if (!title || !link) return;
+
+    const post = document.createElement("a");
+    post.href = link;
+    post.target = "_blank";
+    post.rel = "noopener noreferrer";
+    post.className = "substack-post";
+
+    const titleEl = document.createElement("div");
+    titleEl.className = "substack-post-title";
+    titleEl.textContent = title;
+    post.appendChild(titleEl);
+
+    const dateText = formatDate(item.querySelector("pubDate")?.textContent?.trim());
+    if (dateText) {
+        const dateEl = document.createElement("div");
+        dateEl.className = "substack-post-date";
+        dateEl.textContent = dateText;
+        post.appendChild(dateEl);
     }
 
+    container.appendChild(post);
+}
+
+function renderError(container) {
+    container.innerHTML = "";
+    const wrap = document.createElement("div");
+    wrap.className = "substack-error";
+
+    const text = document.createElement("div");
+    text.className = "substack-error-text";
+    text.textContent = "No se pudo cargar el feed de Substack.";
+    wrap.appendChild(text);
+
+    const link = document.createElement("a");
+    link.href = `https://${SUBSTACK_USERNAME}.substack.com`;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.className = "substack-error-link";
+    link.textContent = "Visitar directamente →";
+    wrap.appendChild(link);
+
+    container.appendChild(wrap);
+}
+
+async function loadSubstackPosts() {
+    const container = document.getElementById("substack-posts");
+    if (!container) return;
+
+    container.innerHTML = "<div class='substack-loading'>Cargando publicaciones...</div>";
+
     try {
-        // Usar proxy CORS compatible con GitHub Pages
-        const feedUrl = `https://${substackUsername}.substack.com/feed`;
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}`;
-        
-        // Mostrar estado de carga
-        container.innerHTML = "<div class='substack-loading'>Cargando publicaciones...</div>";
-        
-        const response = await axios.get(proxyUrl, {
-            timeout: 10000, // 10 segundos de timeout
-            headers: {
-                'Accept': 'application/json'
-            }
-        });
-        
-        // Verificar que la respuesta sea válida
-        if (!response.data || !response.data.contents) {
-            throw new Error("Respuesta inválida del proxy");
-        }
-        
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(response.data.contents, "text/xml");
-        
-        // Verificar errores de parsing XML
-        const parserError = xml.querySelector("parsererror");
-        if (parserError) {
-            throw new Error("Error parsing RSS feed");
-        }
-        
-        const items = xml.querySelectorAll("item");
-        
+        const response = await fetchWithTimeout(PROXY_URL, { headers: { Accept: "application/json" } });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const payload = await response.json();
+        if (!payload?.contents) throw new Error("Respuesta inválida del proxy");
+
+        const xml = new DOMParser().parseFromString(payload.contents, "text/xml");
+        if (xml.querySelector("parsererror")) throw new Error("Error parseando RSS");
+
+        const items = Array.from(xml.querySelectorAll("item")).slice(0, MAX_POSTS);
         if (items.length === 0) {
             container.innerHTML = "<div class='substack-empty'>No hay publicaciones disponibles.</div>";
             return;
         }
-        
-        // Limpiar container y agregar posts
+
         container.innerHTML = "";
         container.className = "substack-posts-container";
-        
-        items.forEach((item, index) => {
-            if (index < 3) { // Mostrar solo los 3 más recientes
-                const title = item.querySelector("title")?.textContent?.trim();
-                const link = item.querySelector("link")?.textContent?.trim();
-                const pubDate = item.querySelector("pubDate")?.textContent?.trim();
-                
-                if (title && link) {
-                    const postElement = document.createElement("a");
-                    postElement.href = link;
-                    postElement.target = "_blank";
-                    postElement.rel = "noopener";
-                    postElement.className = "substack-post";
-                    
-                    let dateFormatted = "";
-                    if (pubDate) {
-                        const date = new Date(pubDate);
-                        dateFormatted = date.toLocaleDateString('es-ES', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric'
-                        });
-                    }
-                    
-                    postElement.innerHTML = `
-                        <div class="substack-post-title">${title}</div>
-                        ${dateFormatted ? `<div class="substack-post-date">${dateFormatted}</div>` : ''}
-                    `;
-                    
-                    container.appendChild(postElement);
-                }
-            }
-        });
-        
+        items.forEach((item) => renderPost(container, item));
     } catch (error) {
         console.error("Error loading Substack feed:", error);
-        container.innerHTML = `
-            <div class="substack-error">
-                <div class="substack-error-text">
-                    No se pudo cargar el feed de Substack
-                </div>
-                <a href="https://${substackUsername}.substack.com" target="_blank" rel="noopener" class="substack-error-link">
-                    Visitar directamente ->
-                </a>
-            </div>
-        `;
+        renderError(container);
     }
 }
 
-// Cargar las publicaciones cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', () => {
-    loadSubstackPosts();
-});
+document.addEventListener("DOMContentLoaded", loadSubstackPosts);
