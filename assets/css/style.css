@@ -3,6 +3,10 @@
   box-sizing: border-box;
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 body {
   background-color: #E5E7EB;
   color: #1C1C1C;
@@ -396,4 +400,284 @@ h3 {
   padding: 2rem 1rem;
   color: #64748b;
   font-style: italic;
+}
+
+/* Hero bridge to Bitácora */
+.hero-bridge {
+  font-size: 0.95rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+  color: #475569;
+}
+
+.hero-bridge-link {
+  color: #1F3B4D;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: #9AC8E2;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.hero-bridge-link:hover {
+  color: #9AC8E2;
+}
+
+/* Bitácora featured section */
+.bitacora-section {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  padding: 3rem 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.bitacora-manifesto {
+  text-align: center;
+  max-width: 42rem;
+  margin: 0 auto 3rem;
+}
+
+.bitacora-eyebrow {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #1F3B4D;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.bitacora-title {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1.25rem;
+  color: #1C1C1C;
+}
+
+.bitacora-body {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #334155;
+  margin: 0;
+}
+
+/* Avatars block */
+.avatars-block {
+  margin-bottom: 3rem;
+}
+
+.avatars-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #1F3B4D;
+}
+
+.avatars-grid {
+  gap: 1rem;
+}
+
+.avatar-card {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border-left: 4px solid #9AC8E2;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.avatar-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px -2px rgba(31, 59, 77, 0.12);
+}
+
+.avatar-name {
+  font-family: 'IBM Plex Serif', serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1F3B4D;
+}
+
+.avatar-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #334155;
+  margin: 0;
+}
+
+/* Subscribe block */
+.subscribe-block {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.subscribe-cta {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1F3B4D;
+  margin-bottom: 1.25rem;
+}
+
+.substack-embed-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.substack-embed-wrapper iframe {
+  max-width: 100%;
+  width: 480px;
+  height: 320px;
+}
+
+/* Latest posts block inside Bitácora */
+.latest-posts-block {
+  margin-top: 1rem;
+}
+
+.latest-posts-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #1F3B4D;
+  text-align: center;
+}
+
+/* Lab button (GitHub) */
+.lab-content {
+  text-align: center;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  padding: 1rem 0;
+}
+
+.lab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: linear-gradient(to right, #1F3B4D, #334155);
+  color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  transform: scale(1);
+  text-decoration: none;
+}
+
+.lab-btn:hover {
+  background: linear-gradient(to right, #0f172a, #1e293b);
+  transform: scale(1.05);
+  color: white;
+}
+
+.lab-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  filter: brightness(0) invert(1);
+}
+
+.lab-text {
+  font-weight: 600;
+}
+
+/* Footer manifesto */
+.footer-manifesto {
+  max-width: 42rem;
+  margin: 0 auto 1rem;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #475569;
+  font-style: italic;
+}
+
+.footer-copy {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+/* Mobile fixes */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 2rem 1rem;
+  }
+
+  .bitacora-section {
+    padding: 2rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 2.25rem;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+  }
+
+  .header {
+    padding: 3rem 1rem;
+  }
+
+  .main-content {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .bitacora-section {
+    padding: 1.75rem 1rem;
+    border-radius: 0.75rem;
+  }
+
+  .bitacora-title {
+    font-size: 1.5rem;
+  }
+
+  .bitacora-body {
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .avatar-card {
+    padding: 1.25rem;
+  }
+
+  .substack-embed-wrapper iframe {
+    width: 100%;
+    height: 360px;
+  }
+
+  .social-icons {
+    gap: 1rem;
+  }
+
+  .social-icon {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+
+  .social-icon img {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+
+  .footer {
+    padding: 2rem 1rem;
+  }
 }

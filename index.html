@@ -42,7 +42,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Serif:wght@400;600&family=Inter:wght@400;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Serif:wght@400;600;700&family=Inter:wght@400;600;700&display=swap"
     rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css">
@@ -58,47 +58,89 @@
     <h1 class="main-title highlight">Soy José Luis</h1>
     <p class="subtitle">Ingeniero. Triatleta. Aprendiz constante.</p>
     <p class="tagline">Construyo con sentido, entreno con método y vivo con propósito.</p>
+    <p class="hero-bridge">Y cuento lo que aprendo en el camino, sin filtros corporativos, en <a href="#bitacora" class="hero-bridge-link">la Bitácora de un Ingeniero de Software</a>.</p>
   </header>
 
   <main class="main-content">
 
-    <section class="section">
-      <h2 class="section-title">Lo que hago</h2>
-      <div class="grid grid-cols-1 md-grid-cols-3">
-        <div class="card">
-          <h3 class="card-title">Ingeniería con criterio</h3>
-          <p class="card-description-grow">Diseño sistemas que funcionan, con foco en claridad, eficiencia y sostenibilidad técnica.</p>
+    <section id="bitacora" class="section bitacora-section">
+      <div class="bitacora-manifesto">
+        <p class="bitacora-eyebrow mono">La Bitácora de un Ingeniero de Software</p>
+        <h2 class="bitacora-title">Una newsletter para devs que no quieren sobrevivir… sino entender.</h2>
+        <p class="bitacora-body">
+          No es otra newsletter sobre el último framework de moda. Es una bitácora. De verdad.
+          Con historias, hostias y aprendizajes que no te enseñan en bootcamps ni en la uni:
+          qué hace de verdad un tech lead, cómo revisar un PR sin parecer borde, cuándo decir que no sin quemarte.
+          Sin postureo. Sin recetas mágicas.
+        </p>
+      </div>
+
+      <div class="avatars-block">
+        <h3 class="avatars-title">¿Te suena?</h3>
+        <div class="grid grid-cols-1 md-grid-cols-2 avatars-grid">
+          <article class="avatar-card">
+            <h4 class="avatar-name">Carlos</h4>
+            <p class="avatar-text">Llevas un año picando código y sientes que no sabes lo suficiente. Cambias de stack cada mes. Te comparas con todo lo que ves en LinkedIn. Necesitas claridad, no más ansiedad.</p>
+          </article>
+          <article class="avatar-card">
+            <h4 class="avatar-name">Laura</h4>
+            <p class="avatar-text">Llevas 8 años y los proyectos te suenan todos a lo mismo. Apagas fuegos sin sentido. Buscas algo que vuelva a darte ganas de pensar.</p>
+          </article>
+          <article class="avatar-card">
+            <h4 class="avatar-name">Jorge</h4>
+            <p class="avatar-text">Llegaste al desarrollo desde otra carrera o un bootcamp. Te sientes fuera de lugar en algunas reuniones. Quieres entender cómo piensan los que llevan 15 años, sin postureo.</p>
+          </article>
+          <article class="avatar-card">
+            <h4 class="avatar-name">Marta</h4>
+            <p class="avatar-text">Lideras un equipo técnico y notas que pasas el día apagando fuegos. Quieres ayudar al equipo, no estorbar. Buscas marcos para hablar de trade-offs sin sonar a charter corporativo.</p>
+          </article>
         </div>
-        <div class="card">
-          <h3 class="card-title">Triatlón como filosofía</h3>
-          <p class="card-description-grow">Entrenar cada día es practicar la constancia, el enfoque y la superación personal.</p>
+      </div>
+
+      <div class="subscribe-block">
+        <p class="subscribe-cta">Suscríbete y te llega un email cuando publico. Sin spam. Sin bullshit.</p>
+        <div class="substack-embed-wrapper">
+          <iframe
+            src="https://bitacoradeuningenierodesoftware.substack.com/embed?transparent=1"
+            width="480"
+            height="320"
+            style="border: 0; background: transparent;"
+            frameborder="0"
+            scrolling="no"
+            loading="lazy"
+            title="Suscríbete a la Bitácora de un Ingeniero de Software"></iframe>
         </div>
-        <div class="card">
-          <h3 class="card-title">Aprendizaje constante</h3>
-          <p class="card-description-grow">Leo, pruebo, comparto. Desde IA y productividad hasta estoicismo y finanzas personales.</p>
+      </div>
+
+      <div class="latest-posts-block">
+        <h3 class="latest-posts-title">Últimas entradas</h3>
+        <div id="substack-posts" class="substack-posts-container">
+          <!-- El contenido se carga dinámicamente -->
         </div>
       </div>
     </section>
 
     <section class="section">
-      <h2 class="section-title">Proyectos y contenidos</h2>
+      <h2 class="section-title">Otros frentes</h2>
       <div class="grid grid-cols-1 md-grid-cols-2">
         <div class="card">
-          <h3 class="card-title">Bitácora de un Ingeniero de Software</h3>
-          <p class="card-description">Reflexiones sobre software, liderazgo técnico y crecimiento profesional.</p>
-          <div id="substack-posts" class="card-content">
-            <!-- El contenido se carga dinámicamente -->
+          <h3 class="card-title">Triatlón en Instagram</h3>
+          <p class="card-description-grow">No subo fotos de entrenos: subo la práctica diaria de constancia, foco y superación. Lo mismo que aplico al código, pero con más sudor.</p>
+          <div id="instagram-content" class="instagram-content">
+            <a href="https://www.instagram.com/jlgonbe" target="_blank" rel="noopener" class="instagram-btn">
+              <img src="assets/icons/instagram-logo.png" alt="" class="instagram-icon">
+              <span class="instagram-text">Ver entrenamientos →</span>
+            </a>
           </div>
         </div>
         <div class="card">
-          <h3 class="card-title">Triatlón en Instagram</h3>
-          <p class="card-description">Mis entrenamientos, carreras y progresos compartidos de forma real y transparente.</p>
-          <div id="instagram-content" class="instagram-content">
-              <a href="https://www.instagram.com/jlgonbe" target="_blank" rel="noopener" class="instagram-btn">
-                <img src="assets/icons/instagram-logo.png" alt="Instagram" class="instagram-icon">
-                <span class="instagram-text">Ver entrenamientos →</span>
-              </a>
-              <p class="instagram-caption">Últimas actualizaciones</p>
+          <h3 class="card-title">El laboratorio</h3>
+          <p class="card-description-grow">Esta web, mis experimentos con agentes IA, side-projects y código abierto. Aquí pruebo, rompo y aprendo en público.</p>
+          <div class="lab-content">
+            <a href="https://github.com/jlgonbe" target="_blank" rel="noopener" class="lab-btn">
+              <img src="assets/icons/github-logo.png" alt="" class="lab-icon">
+              <span class="lab-text">Ver en GitHub →</span>
+            </a>
           </div>
         </div>
       </div>
@@ -107,24 +149,29 @@
     <section class="section">
       <h2 class="section-title">Conecta conmigo</h2>
       <div class="social-icons">
-        <a href="https://x.com/jlgonbe" target="_blank" rel="noopener" aria-label="X" class="social-icon x-icon">
-          <img src="assets/icons/x-logo.png" alt="X">
+        <a href="https://x.com/jlgonbe" target="_blank" rel="noopener" aria-label="X (antes Twitter)" class="social-icon x-icon">
+          <img src="assets/icons/x-logo.png" alt="">
         </a>
         <a href="https://www.linkedin.com/in/jlgonbe" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon linkedin-icon">
-          <img src="assets/icons/linkedin-logo.png" alt="LinkedIn">
+          <img src="assets/icons/linkedin-logo.png" alt="">
         </a>
         <a href="https://substack.com/@jlgonbe" target="_blank" rel="noopener" aria-label="Substack" class="social-icon substack-icon">
-          <img src="assets/icons/substack-logo.png" alt="Substack">
+          <img src="assets/icons/substack-logo.png" alt="">
         </a>
         <a href="https://github.com/jlgonbe" target="_blank" rel="noopener" aria-label="GitHub" class="social-icon github-icon">
-          <img src="assets/icons/github-logo.png" alt="GitHub">
+          <img src="assets/icons/github-logo.png" alt="">
         </a>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    © 2026 J.L. González Beltrán — Construyendo con intención
+    <p class="footer-manifesto">
+      Aquí no hay humo ni fórmulas mágicas. Escribo sobre lo que aprendo construyendo software,
+      entrenando triatlón y intentando no engañarme a mí mismo. Si te suena, suscríbete.
+      Si no, también está bien.
+    </p>
+    <p class="footer-copy">© 2026 J.L. González Beltrán</p>
   </footer>
 </body>
 
