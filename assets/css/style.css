@@ -266,6 +266,7 @@ h3 {
 .social-icon img {
   width: 2rem;
   height: 2rem;
+  object-fit: contain;
   transition: transform 0.3s ease;
 }
 
@@ -465,7 +466,7 @@ h3 {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--bitacora-accent);
+  color: var(--bitacora-accent-hover);
   background: var(--bitacora-accent-soft);
   padding: 0.35rem 0.85rem;
   border-radius: 9999px;
@@ -581,6 +582,7 @@ h3 {
   width: 100%;
   max-width: 480px;
   height: 580px;
+  min-height: 580px;
 }
 
 /* Latest posts block inside Bitácora */
@@ -604,7 +606,7 @@ h3 {
 
 .latest-posts-link {
   display: inline-block;
-  color: var(--bitacora-accent);
+  color: var(--bitacora-accent-hover);
   font-weight: 600;
   text-decoration: none;
   border-bottom: 2px solid transparent;
@@ -612,7 +614,7 @@ h3 {
 }
 
 .latest-posts-link:hover {
-  color: var(--bitacora-accent-hover);
+  color: var(--bitacora-ink);
   border-bottom-color: var(--bitacora-accent-hover);
 }
 
@@ -740,7 +742,7 @@ h3 {
 .footer-copy {
   margin: 0;
   font-size: 0.85rem;
-  color: #6b7280;
+  color: #4b5563;
 }
 
 /* Mobile fixes */
@@ -811,6 +813,7 @@ h3 {
   .substack-embed-wrapper iframe {
     width: 100%;
     height: 580px;
+    min-height: 580px;
   }
 
   .social-icons {
