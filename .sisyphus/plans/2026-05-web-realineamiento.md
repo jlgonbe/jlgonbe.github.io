@@ -407,3 +407,11 @@ Fuente: `https://revisar-codigo-ia.bitacoradeuningenierodesoftware.com/_astro/Fo
 - ⏳ Verificar Settings → Actions → Workflow permissions = "Read and write" en el repo tras push.
 - ⏳ Validar primera ejecución del workflow en CI real (manual dispatch tras merge).
 - ⏳ OG en producción + Lighthouse tras merge.
+
+### Ajustes adicionales en PR #4 (mismo branch, antes del merge)
+
+- ✅ `cron` cambiado de `0 */6 * * *` (cada 6h) a `0 6 * * *` (1×/día a 06:00 UTC) — feedback usuario: "vale con refrescarlo una vez al día".
+- ✅ `actions/checkout@v4` → `@v6` y `actions/setup-node@v4` → `@v6` (versions latest, Node 24-ready) — fix deprecation warning Node.js 20 actions deprecadas (effective June 2026).
+- ✅ `node-version: "20"` → `"24"` (LTS actual, evita futuro warning de runtime).
+- ✅ README sincronizado: `cron 0 6 * * *` (1×/día), `Node 24+`, `GitHub Actions + Node 24`.
+- ✅ Verificado vía `gh api`: `default_workflow_permissions=write` ya configurado en el repo (no requiere acción manual del usuario).

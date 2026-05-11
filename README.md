@@ -31,9 +31,9 @@ jlgonbe.github.io/
 ├── site.webmanifest                 # PWA manifest
 ├── params.json                      # Configuración GitHub Pages
 ├── .github/workflows/
-│   └── refresh-substack-feed.yml    # Action: refresca feed cada 6h + dispatch manual
+│   └── refresh-substack-feed.yml    # Action: refresca feed 1×/día + dispatch manual
 ├── scripts/
-│   └── refresh-substack-feed.mjs    # Node 20+ fetch RSS → JSON estático
+│   └── refresh-substack-feed.mjs    # Node 24+ fetch RSS → JSON estático
 ├── assets/
 │   ├── css/
 │   │   └── style.css                # Estilos (vanilla, ~600 líneas)
@@ -68,7 +68,7 @@ jlgonbe.github.io/
 | **CSS3** | Estilos, grid, responsive (sin frameworks) |
 | **JavaScript ES6+ vanilla** | `fetch` nativo + `AbortController` para cargar el JSON local del feed |
 | **Google Fonts** | IBM Plex Serif + Inter + IBM Plex Mono (marca personal) y Lora + Inter (bloque editorial Bitácora) |
-| **GitHub Actions + Node 20** | Workflow programado (cron `0 */6 * * *` + dispatch) que refresca `assets/data/substack-feed.json` desde el RSS de Substack |
+| **GitHub Actions + Node 24** | Workflow programado (cron `0 6 * * *` = 1×/día + dispatch) que refresca `assets/data/substack-feed.json` desde el RSS de Substack |
 | **iframe Substack** | Form de suscripción embebido (transparente, lazy-loaded) |
 
 ## 📐 Arquitectura de la página
@@ -89,7 +89,7 @@ jlgonbe.github.io/
 ### 📡 Feed de Substack (sin proxies de terceros)
 
 - **Fuente**: RSS de [bitacoradeuningenierodesoftware.substack.com/feed](https://bitacoradeuningenierodesoftware.substack.com/feed).
-- **Refresco**: GitHub Action `refresh-substack-feed.yml` ejecuta `scripts/refresh-substack-feed.mjs` cada 6h (cron `0 */6 * * *`) y bajo demanda (`workflow_dispatch`).
+- **Refresco**: GitHub Action `refresh-substack-feed.yml` ejecuta `scripts/refresh-substack-feed.mjs` 1 vez al día a las 06:00 UTC (cron `0 6 * * *`) y bajo demanda (`workflow_dispatch`).
 - **Salida**: `assets/data/substack-feed.json` con las 3 últimas entradas (`title`, `link`, `pubDate`, `description`).
 - **Commit del bot**: el workflow commitea con `[skip ci]` para evitar loops; usa `concurrency` para serializar runs.
 - **Frontend**: `main.js` hace `fetch('assets/data/substack-feed.json')` con `AbortController` (timeout 10s) y renderiza con `textContent` (XSS-safe).
@@ -121,7 +121,7 @@ node scripts/refresh-substack-feed.mjs
 # Genera/actualiza assets/data/substack-feed.json con las 3 últimas entradas.
 ```
 
-> Requiere Node 20+ (usa `fetch` nativo, sin dependencias npm).
+> Requiere Node 24+ (usa `fetch` nativo, sin dependencias npm).
 
 ## 🌐 Despliegue
 

@@ -2,8 +2,8 @@ name: Refresh Substack feed
 
 on:
   schedule:
-    # Every 6 hours, on the hour
-    - cron: "0 */6 * * *"
+    # Once a day at 06:00 UTC (07:00 Europe/Madrid winter, 08:00 summer)
+    - cron: "0 6 * * *"
   workflow_dispatch: {}
 
 permissions:
@@ -18,12 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Refresh feed JSON
         run: node scripts/refresh-substack-feed.mjs
