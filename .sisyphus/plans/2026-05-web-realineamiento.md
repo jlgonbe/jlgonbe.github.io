@@ -429,3 +429,61 @@ Fuente: `https://revisar-codigo-ia.bitacoradeuningenierodesoftware.com/_astro/Fo
 - **Mapping API → schema interno**: `canonical_url` → `link`, `post_date` → `pubDate`, resto idéntico.
 - **Verificado local**: ambas rutas funcionan; RSS devuelve 16 items (slice 3), API devuelve 3 directos.
 - **Branch**: `hotfix/substack-403-fallback`.
+
+### PR #6 — Estilo posts paleta editorial Bitácora (mergeada 2026-05-11)
+
+- **Branch**: `style/bitacora-posts-palette`.
+- **Problema**: tarjetas `.substack-post*` heredaban estilos de la paleta corporativa antigua (azules, sin tipografía editorial), rompiendo consistencia visual con el resto del bloque Bitácora.
+- **Cambios** (`assets/css/style.css` líneas 279–344):
+  - `.substack-post` → fondo `var(--bitacora-bg-alt)`, borde `var(--bitacora-line)`, sin sombra azul.
+  - `.substack-post-title` → Lora 1.15rem, `color: var(--bitacora-ink)`, hover `var(--bitacora-accent)`.
+  - `.substack-post-date` → Inter 0.85rem, `color: var(--bitacora-ink-muted)`.
+  - `.substack-post-link` → `color: var(--bitacora-accent)`, hover `var(--bitacora-accent-hover)`.
+  - Eliminado emoji decorativo y cualquier referencia a azules de la paleta corporativa.
+- **Validado**: render headless desktop 1280px + iPhone 13 (390×844) — paleta unificada, jerarquía clara, hover legible.
+
+### PR #7 — Iframe Substack 580px ambos viewports (mergeada 2026-05-11)
+
+- **Branch**: `style/substack-iframe-580px`.
+- **Problema**: con `height=400` (PR #4) el botón "Suscribirse" + disclaimer legal Substack quedaban cortados en algunos zooms y mobile.
+- **Cambios** (`assets/css/style.css`, +2/-2 líneas):
+  - Línea 576 (desktop): `.substack-embed-wrapper iframe { height: 320px → 580px; }`.
+  - Línea 805 (mobile breakpoint): `.substack-embed-wrapper iframe { height: 360px → 580px; }`.
+- **Decisión**: misma altura ambos viewports — usuario validó visualmente con captura que 580px deja respiración para botón + disclaimer en cualquier device width.
+- **Validado**: usuario confirmó captura desktop + mobile, sin solapamientos, sin scroll interno innecesario.
+
+### PR #8 — Hotfix Jina fallback (3ª capa) (mergeada 2026-05-11)
+
+- **Branch**: `hotfix/substack-jina-fallback`.
+- **Síntoma post-PR #5**: ejecución CI volvió a fallar con 403 también en API directa (`/api/v1/posts`); Cloudflare endurece bloqueo a IPs Azure runners.
+- **Fix**: añadir 3ª capa de fallback usando `r.jina.ai` como proxy de lectura.
+  - URL: `https://r.jina.ai/<API_URL_ABSOLUTA>` (proxy concatena scheme+host+path en la URL).
+  - Header crítico: `X-Return-Format: text` — fuerza Jina a devolver el body upstream sin renderizado markdown.
+  - Wrapper Jina: respuesta llega como `{code, status, data: {text: "<json-string>"}}` → desempaquetar `wrapper.data.text` (string) → `JSON.parse(...)` → pasar a `mapApiPosts()`.
+- **Refactor `scripts/refresh-substack-feed.mjs`** (+46/-10): `main()` reescrito como loop de estrategias `[rss, api, jina]`; primera estrategia que devuelve ≥1 post gana; metadatos `source` y `fetchedAt` añadidos al JSON output.
+- **Validado local end-to-end**: forzando fallo de capas 1+2 (mock 403), capa 3 Jina devuelve `[3/3] Jina OK: 3 items` con datos íntegros.
+
+### PR #9 — Workflow Pages propio Node 24 (mergeada 2026-05-11)
+
+- **Branch**: `ci/pages-deploy-node24`.
+- **Problema**: workflow legacy `pages-build-deployment` (autogenerado por GitHub al usar "Deploy from a branch") usa Node 20 internamente y muestra warning permanente de deprecation; sin forma de actualizarlo desde el repo.
+- **Solución**: nuevo workflow propio `.github/workflows/pages.yml` reemplazando el modelo legacy:
+  - `actions/checkout@v6.0.2` (Node 24).
+  - `actions/configure-pages@v6.0.0` (Node 24).
+  - `actions/upload-pages-artifact@v5.0.0` (Node 24).
+  - `actions/deploy-pages@v5.0.0` (Node 24).
+  - Concurrency `group: pages, cancel-in-progress: false` (no abortar deploys a medias).
+  - Permisos mínimos: `contents: read`, `pages: write`, `id-token: write`.
+  - Triggers: `push: master` + `workflow_dispatch`.
+- **Acción manual usuario**: Settings → Pages → Source = "GitHub Actions" (cambio del modelo legacy "Deploy from a branch").
+- **Validado en producción**: usuario confirmó run #1 success (build 5s + deploy 9s = 28s total) sin warnings.
+- **Pregunta resuelta**: el step `report-build-status` del workflow legacy NO se replica — era telemetría exclusiva del modelo "Deploy from a branch" (`POST /pages/telemetry`); el modelo Actions usa `/pages/deployments` vía `actions/deploy-pages@v5` que ya cubre el reporte de estado.
+
+### Pendientes globales tras PR #9
+
+- ⏳ Validar primer run real del workflow `refresh-substack-feed.yml` en CI vía cadena Jina (esperar cron `0 6 * * *` o lanzar `workflow_dispatch` manual) — confirmar `assets/data/substack-feed.json` regenerado con `source: "jina"` o `source: "rss"` según resuelva.
+- ⏳ Mobile responsive global a 375px sigue roto pre-existente (avatares, copy, social icons) — bug de scope mayor, NO abordado en esta tanda.
+- ⏳ Validación OG en producción (LinkedIn Post Inspector / Twitter Card Validator / Facebook Debugger) con URL definitiva.
+- ⏳ Lighthouse audit completo (Performance / Accessibility / Best Practices / SEO).
+- ⏳ Sub-fase C del plan original (si aplica tras revalidación de scope).
+- ⏳ Fases 2 (Captación y conversión 💰) y 3 (Visibilidad y escalado 🚀).
