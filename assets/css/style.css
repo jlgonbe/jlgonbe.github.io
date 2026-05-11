@@ -424,13 +424,33 @@ h3 {
   color: #9AC8E2;
 }
 
-/* Bitácora featured section */
+/* Bitácora featured section — paleta editorial (Sub-fase B.2) */
+:root {
+  --bitacora-bg: #f4f1e1;
+  --bitacora-bg-alt: #ffffff;
+  --bitacora-bg-soft: #faf8ef;
+  --bitacora-ink: #1a1a1a;
+  --bitacora-ink-soft: #4a4a4a;
+  --bitacora-ink-muted: #6b6b6b;
+  --bitacora-line: #e6e1cf;
+  --bitacora-accent: #3e8e41;
+  --bitacora-accent-hover: #2f6f32;
+  --bitacora-accent-soft: #f1f8f1;
+  --bitacora-warm: #e8a87c;
+  --bitacora-shadow-card: 0 1px 2px rgba(26, 26, 26, 0.04), 0 4px 12px rgba(26, 26, 26, 0.06);
+  --bitacora-shadow-cta: 0 2px 8px rgba(62, 142, 65, 0.25);
+  --bitacora-radius-md: 0.375rem;
+  --bitacora-radius-xl: 0.75rem;
+  --bitacora-radius-2xl: 1rem;
+}
+
 .bitacora-section {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  padding: 3rem 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e2e8f0;
+  background: var(--bitacora-bg);
+  padding: 3.5rem 2.5rem;
+  border-radius: var(--bitacora-radius-2xl);
+  box-shadow: var(--bitacora-shadow-card);
+  border: 1px solid var(--bitacora-line);
+  font-family: 'Inter', sans-serif;
 }
 
 .bitacora-manifesto {
@@ -440,26 +460,36 @@ h3 {
 }
 
 .bitacora-eyebrow {
-  font-size: 0.85rem;
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #1F3B4D;
-  margin-bottom: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--bitacora-accent);
+  background: var(--bitacora-accent-soft);
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  margin-bottom: 1rem;
   font-weight: 600;
+  max-width: 100%;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .bitacora-title {
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-family: 'Lora', 'IBM Plex Serif', serif;
+  font-size: 2.15rem;
+  font-weight: 600;
+  line-height: 1.25;
   margin-bottom: 1.25rem;
-  color: #1C1C1C;
+  color: var(--bitacora-ink);
+  letter-spacing: -0.01em;
 }
 
 .bitacora-body {
   font-size: 1.05rem;
   line-height: 1.7;
-  color: #334155;
+  color: var(--bitacora-ink-soft);
   margin: 0;
 }
 
@@ -469,11 +499,12 @@ h3 {
 }
 
 .avatars-title {
+  font-family: 'Lora', 'IBM Plex Serif', serif;
   font-size: 1.5rem;
   font-weight: 600;
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #1F3B4D;
+  color: var(--bitacora-ink);
 }
 
 .avatars-grid {
@@ -481,31 +512,31 @@ h3 {
 }
 
 .avatar-card {
-  background-color: #ffffff;
+  background-color: var(--bitacora-bg-alt);
   padding: 1.5rem;
-  border-radius: 0.75rem;
-  border-left: 4px solid #9AC8E2;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border-radius: var(--bitacora-radius-xl);
+  border-left: 4px solid var(--bitacora-accent);
+  box-shadow: 0 1px 2px rgba(26, 26, 26, 0.04);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .avatar-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px -2px rgba(31, 59, 77, 0.12);
+  box-shadow: var(--bitacora-shadow-card);
 }
 
 .avatar-name {
-  font-family: 'IBM Plex Serif', serif;
+  font-family: 'Lora', 'IBM Plex Serif', serif;
   font-size: 1.15rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #1F3B4D;
+  color: var(--bitacora-ink);
 }
 
 .avatar-text {
   font-size: 0.95rem;
   line-height: 1.6;
-  color: #334155;
+  color: var(--bitacora-ink-soft);
   margin: 0;
 }
 
@@ -516,9 +547,11 @@ h3 {
 }
 
 .subscribe-cta {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #1F3B4D;
+  font-family: 'Lora', 'IBM Plex Serif', serif;
+  font-style: italic;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--bitacora-ink);
   margin-bottom: 1.25rem;
 }
 
@@ -540,11 +573,99 @@ h3 {
 }
 
 .latest-posts-title {
+  font-family: 'Lora', 'IBM Plex Serif', serif;
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #1F3B4D;
+  color: var(--bitacora-ink);
   text-align: center;
+}
+
+.latest-posts-link-wrap {
+  text-align: center;
+  margin: 1.5rem 0 0;
+}
+
+.latest-posts-link {
+  display: inline-block;
+  color: var(--bitacora-accent);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.latest-posts-link:hover {
+  color: var(--bitacora-accent-hover);
+  border-bottom-color: var(--bitacora-accent-hover);
+}
+
+/* Bitácora CTA dark band (final, before footer) */
+.bitacora-cta-band {
+  background: var(--bitacora-ink);
+  color: #ffffff;
+  padding: 4rem 1.5rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.bitacora-cta-band-inner {
+  max-width: 42rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.bitacora-cta-band-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--bitacora-warm);
+  margin: 0 0 1rem;
+  font-weight: 600;
+}
+
+.bitacora-cta-band-title {
+  font-family: 'Lora', 'IBM Plex Serif', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0 0 1rem;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.bitacora-cta-band-accent {
+  color: var(--bitacora-warm);
+  font-style: italic;
+}
+
+.bitacora-cta-band-body {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #d4d4d4;
+  margin: 0 0 2rem;
+}
+
+.substack-embed-wrapper--dark {
+  margin-bottom: 1.5rem;
+}
+
+.bitacora-cta-band-link-wrap {
+  margin: 0;
+}
+
+.bitacora-cta-band-link {
+  display: inline-block;
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid var(--bitacora-warm);
+  padding-bottom: 0.15rem;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.bitacora-cta-band-link:hover {
+  color: var(--bitacora-warm);
 }
 
 /* Lab button (GitHub) */
@@ -614,6 +735,10 @@ h3 {
   .bitacora-section {
     padding: 2rem 1.25rem;
   }
+
+  .bitacora-cta-band {
+    padding: 3rem 1.25rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -639,10 +764,22 @@ h3 {
   }
 
   .bitacora-title {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 
   .bitacora-body {
+    font-size: 1rem;
+  }
+
+  .bitacora-cta-band {
+    padding: 2.5rem 1rem;
+  }
+
+  .bitacora-cta-band-title {
+    font-size: 1.5rem;
+  }
+
+  .bitacora-cta-band-body {
     font-size: 1rem;
   }
 
