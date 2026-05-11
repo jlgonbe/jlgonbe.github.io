@@ -9,6 +9,7 @@ const ROOT = resolve(__dirname, "..");
 const SUBSTACK_USERNAME = "bitacoradeuningenierodesoftware";
 const FEED_URL = `https://${SUBSTACK_USERNAME}.substack.com/feed`;
 const API_URL = `https://${SUBSTACK_USERNAME}.substack.com/api/v1/posts?limit=3`;
+const JINA_PROXY_URL = `https://r.jina.ai/${API_URL}`;
 const OUTPUT_PATH = resolve(ROOT, "assets/data/substack-feed.json");
 const MAX_POSTS = 3;
 const REQUEST_TIMEOUT_MS = 15_000;
@@ -68,7 +69,7 @@ function mapApiPosts(json) {
         }));
 }
 
-async function fetchWithTimeout(url, { timeoutMs = REQUEST_TIMEOUT_MS, accept } = {}) {
+async function fetchWithTimeout(url, { timeoutMs = REQUEST_TIMEOUT_MS, accept, extraHeaders } = {}) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
@@ -78,6 +79,7 @@ async function fetchWithTimeout(url, { timeoutMs = REQUEST_TIMEOUT_MS, accept } 
                 "User-Agent": BROWSER_UA,
                 "Accept-Language": "en-US,en;q=0.9",
                 Accept: accept || "*/*",
+                ...(extraHeaders || {}),
             },
         });
         if (!response.ok) {
@@ -90,33 +92,67 @@ async function fetchWithTimeout(url, { timeoutMs = REQUEST_TIMEOUT_MS, accept } 
 }
 
 async function tryRss() {
-    console.log(`[1/2] Trying RSS: ${FEED_URL}`);
+    console.log(`[1/3] Trying RSS: ${FEED_URL}`);
     const xml = await fetchWithTimeout(FEED_URL, {
         accept: "application/rss+xml, application/xml, text/xml, */*",
     });
     const items = parseRssItems(xml);
     if (items.length === 0) throw new Error("RSS parsed 0 items");
-    console.log(`[1/2] RSS OK: ${items.length} items`);
+    console.log(`[1/3] RSS OK: ${items.length} items`);
     return { source: FEED_URL, items };
 }
 
 async function tryApi() {
-    console.log(`[2/2] Falling back to API: ${API_URL}`);
+    console.log(`[2/3] Trying API direct: ${API_URL}`);
     const text = await fetchWithTimeout(API_URL, { accept: "application/json" });
     const json = JSON.parse(text);
     const items = mapApiPosts(json);
     if (items.length === 0) throw new Error("API returned 0 items");
-    console.log(`[2/2] API OK: ${items.length} items`);
+    console.log(`[2/3] API OK: ${items.length} items`);
     return { source: API_URL, items };
 }
 
+async function tryJinaProxy() {
+    console.log(`[3/3] Trying Jina proxy: ${JINA_PROXY_URL}`);
+    const text = await fetchWithTimeout(JINA_PROXY_URL, {
+        accept: "application/json",
+        extraHeaders: { "X-Return-Format": "text" },
+    });
+    // Jina wraps the upstream response: { code, status, data: { text: "<stringified-substack-json>" } }
+    // We must unwrap .data.text and re-parse it to get the original Substack array.
+    const wrapper = JSON.parse(text);
+    const inner = wrapper?.data?.text;
+    if (typeof inner !== "string") {
+        throw new Error("Jina proxy: missing data.text in wrapper");
+    }
+    const json = JSON.parse(inner);
+    const items = mapApiPosts(json);
+    if (items.length === 0) throw new Error("Jina proxy returned 0 items");
+    console.log(`[3/3] Jina OK: ${items.length} items`);
+    return { source: JINA_PROXY_URL, items };
+}
+
 async function main() {
+    const strategies = [
+        { name: "RSS", fn: tryRss },
+        { name: "API direct", fn: tryApi },
+        { name: "Jina proxy", fn: tryJinaProxy },
+    ];
+
     let result;
-    try {
-        result = await tryRss();
-    } catch (rssErr) {
-        console.warn(`[1/2] RSS failed: ${rssErr.message}`);
-        result = await tryApi();
+    let lastError;
+    for (const { name, fn } of strategies) {
+        try {
+            result = await fn();
+            break;
+        } catch (err) {
+            lastError = err;
+            console.warn(`${name} failed: ${err.message}`);
+        }
+    }
+
+    if (!result) {
+        throw new Error(`All strategies failed. Last error: ${lastError?.message}`);
     }
 
     const posts = result.items.slice(0, MAX_POSTS);
