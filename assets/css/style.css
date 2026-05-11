@@ -573,7 +573,7 @@ h3 {
 .substack-embed-wrapper iframe {
   max-width: 100%;
   width: 480px;
-  height: 320px;
+  height: 580px;
 }
 
 /* Latest posts block inside Bitácora */
@@ -802,7 +802,7 @@ h3 {
 
   .substack-embed-wrapper iframe {
     width: 100%;
-    height: 360px;
+    height: 580px;
   }
 
   .social-icons {
