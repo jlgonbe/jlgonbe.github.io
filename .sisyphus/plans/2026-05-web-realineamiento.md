@@ -299,3 +299,122 @@ Fuente: `https://revisar-codigo-ia.bitacoradeuningenierodesoftware.com/_astro/Fo
 - **Cargar 2 iframes Substack** añade peso (~2 requests externas a substack.com). Aceptable: ambos `loading="lazy"`.
 - **Lora desde Google Fonts** añade ~30 KB. Aceptable: una sola familia, pesos limitados.
 - **URL `bitacoradeuningenierodesoftware.com`** podría no estar configurada todavía; si falla, fallback a `.substack.com`.
+
+---
+
+## Sub-fase B.3 — Fix feed Substack + iconos avatares + reenfoque IA copy 🤖
+
+> **Estado**: ✅ Implementación local completada — pendiente push + PR #4 + merge.
+> **Fecha**: 2026-05-11
+> **Disparador**: Usuario detecta 3 problemas tras merge PR #3:
+>   1. Feed Substack no carga (proxy `api.allorigins.win` inestable).
+>   2. Avatares con nombres ficticios (Carlos/Laura/Jorge/Marta) no aportan; pide iconos + descripciones.
+>   3. Copy genérico; pide reenfoque hacia IA fiel a voz Bitácora.
+
+### Diagnóstico feed Substack
+
+- **Root cause**: `assets/js/main.js` L3 usa `https://api.allorigins.win/get?url=...` como proxy CORS. Servicio público gratuito notoriamente inestable (downtime, rate limits, cambios silenciosos de API).
+- Código bien escrito (timeout, AbortController, XSS-safe). Problema = infraestructura ajena.
+
+### Decisiones confirmadas (2026-05-11)
+
+| # | Pregunta | Decisión | Notas |
+|---|----------|----------|-------|
+| 1 | **Estrategia fix feed** | **C — GitHub Action + JSON estático** | Cron 6h refresca `assets/data/substack-feed.json`. JS lee fichero local. Cero dependencias runtime. Encaja perfecto con GitHub Pages (mismo repo, mismo deploy). Filosofía F\*ck you money: no depender de servicios gratuitos ajenos. |
+| 2 | **Frecuencia workflow** | **A — Cada 6h + `workflow_dispatch` manual** | 4 ejecuciones/día. Suficiente para newsletter ~2 posts/mes. Botón manual para forzar refresh tras publicar. |
+| 3 | **Avatares: nombres → iconos** | **A — 4 cards con SVG inline + pain points** | Lupa / Chip / Cerebro / Engranaje. Estilo line-art consistente. SVG inline 24×24 con `currentColor` (recoloreable). Sin dependencias externas. |
+| 4 | **Copy reenfoque IA** | **A — Aprobado tal cual** | Verbatim "Shit in, shit out" (post real Bitácora May 2026). Tono honesto/gamberro (cumple voz). |
+| 5 | **Estrategia rama** | **A — Rama nueva `fase-b3` desde master limpio** | PR #3 mergeada (`c6bc191`). PRs atómicos. PR #4 al terminar. |
+
+### Cambios concretos a implementar
+
+**1. Fix feed Substack (Opción C)**:
+- Crear `.github/workflows/refresh-substack-feed.yml`:
+  - Triggers: `schedule: cron "0 */6 * * *"` + `workflow_dispatch`.
+  - Steps: checkout, run script, commit + push si hay cambios (con `git diff --quiet` para evitar commits vacíos).
+  - Permissions: `contents: write`.
+- Crear `scripts/refresh-substack-feed.sh` (o Node): fetch RSS, parse XML, extraer `MAX_POSTS=3` items, escribir `assets/data/substack-feed.json` con shape `{ updated_at, posts: [{ title, link, pubDate, description }] }`.
+- Refactor `assets/js/main.js`:
+  - Eliminar `PROXY_URL` y `FEED_URL`.
+  - Sustituir fetch RSS+XML parse por `fetch('assets/data/substack-feed.json')`.
+  - Mantener fallback elegante (link directo a Substack si JSON falla).
+  - Mantener XSS-safety (`textContent`).
+- Generar primer `assets/data/substack-feed.json` manualmente para que la web cargue desde el primer deploy (antes del primer cron).
+
+**2. Iconos avatares**:
+- En `index.html` reemplazar las 4 `.avatar-card` (Carlos/Laura/Jorge/Marta) por:
+  - Bloque `<div class="avatar-card-icon">` con SVG inline 24×24 + título pain-point + descripción.
+  - Mantener `border-left` verde (`var(--bitacora-accent)`) ya implementado.
+- Iconos (line-art Lucide-style):
+  - 🔍 Lupa → "Aprueban PRs sin entenderlos" / "El test pasa, el linter calla, mergeas. Tres semanas después, alguien paga la factura en producción."
+  - 🤖 Chip → "Copilotean en automático" / "Tab, tab, tab. Funciona. ¿Por qué funciona? Ni idea. Y mañana toca debuggearlo a ciegas."
+  - 🧠 Cerebro → "Saben que la IA no es magia" / "Quieren usarla como palanca, no como muleta. Buscan criterio, no atajos."
+  - 🛠️ Engranaje → "Han visto arder un viernes" / "Saben que la deuda técnica con firma de IA pesa igual. Quieren herramientas, no humo."
+- CSS: añadir `.avatar-card-icon svg` con `width: 32px; height: 32px; color: var(--bitacora-accent); margin-bottom: 0.5rem;`.
+
+**3. Copy reenfoque IA**:
+- En `#bitacora`:
+  - Eyebrow (mantener pill): `LA BITÁCORA DE UN INGENIERO DE SOFTWARE`.
+  - Titular (Lora): `La IA no te hace mejor ingeniero. Amplifica al que ya lo es.`
+  - Body (Inter): "Una newsletter para developers que ya no se tragan el "10x productivity" ni el humo del último framework. Aquí hablamos de criterio, de revisar código que escupe la IA antes de aprobarlo, y de por qué la mayoría de PRs generados rompen producción tres semanas después. Sin atajos. Sin oráculos. El porqué, no solo el cómo."
+- Subtítulo grid: `¿Te suena?` (mantener).
+- CTA encima del iframe: "Si has leído hasta aquí, ya sabes que esto no va de herramientas. Va de pensar. **Suscríbete y deja de programar en automático.**"
+- Banda CTA oscura final:
+  - Eyebrow (warm orange): `ÚLTIMA LLAMADA`.
+  - Titular: `La IA no arregla el pensamiento mediocre. Lo amplifica.` (verbatim del post "Shit in, shit out").
+  - Body: "Si quieres que te amplifique el bueno, llevas 30 segundos para suscribirte. Te llega al email cuando publico. Sin spam. Cuando quieras te das de baja."
+  - Link: "Leer más en la Bitácora →"
+
+### Tareas de ejecución
+1. Crear `.github/workflows/refresh-substack-feed.yml` (cron 6h + dispatch).
+2. Crear `scripts/refresh-substack-feed.{sh|js}` con fetch RSS + parse + write JSON.
+3. Generar primer `assets/data/substack-feed.json` ejecutando script en local.
+4. Refactor `assets/js/main.js` para leer JSON local.
+5. Reemplazar 4 avatares en `index.html` por iconos SVG inline + pain points.
+6. Actualizar copy `#bitacora` (titular + body + CTA encima iframe).
+7. Actualizar copy banda CTA oscura final.
+8. CSS: añadir estilos para `.avatar-card-icon svg`.
+9. Smoke test + render headless 320/375/1280 + validación visual con `look_at`.
+10. Actualizar README (eliminar mención `api.allorigins.win`, documentar workflow + nuevo copy).
+11. Commit + push + PR #4 Sub-fase B.3.
+
+### Riesgos / consideraciones
+- **Workflow GitHub Action requiere `contents: write`**: verificar permisos del repo (Settings → Actions → Workflow permissions).
+- **Commits automáticos del bot**: usar `github-actions[bot]` como autor. Filtrar con `[skip ci]` en mensaje para evitar loops.
+- **JSON cacheado por GitHub Pages**: añadir `?v=` con timestamp en fetch, o aceptar caché de hasta 10 min de Pages CDN (no crítico).
+- **Iconos line-art consistentes**: usar mismo stroke-width y estilo Lucide/Heroicons para coherencia visual.
+- **Verbatim "Shit in, shit out"**: confirmado como título de post real (May 2026), NO inventado.
+- **Tono potencialmente confrontacional**: copy aprobado tal cual por usuario; alineado con voz Bitácora ("colleja", "humo", "loco").
+
+### Cambios ejecutados (2026-05-11)
+
+- ✅ `.github/workflows/refresh-substack-feed.yml` — cron `0 */6 * * *` + `workflow_dispatch`, `permissions: contents: write`, `concurrency` group, commit del bot con `[skip ci]`.
+- ✅ `scripts/refresh-substack-feed.mjs` — Node 20+ (sin deps npm), fetch nativo, parser RSS por regex, decoder de entidades HTML, escribe `assets/data/substack-feed.json` con shape `{ source, updated_at, count, posts: [...] }`.
+- ✅ `assets/data/substack-feed.json` — primer snapshot generado en local: 3 posts reales (Shit in, shit out / Requisitos vagos, desastre asegurado / La farmacéutica que no quería pensar demasiado).
+- ✅ `assets/js/main.js` — refactor completo: eliminado `PROXY_URL` y parser XML; ahora hace `fetch('assets/data/substack-feed.json')` con `AbortController` (timeout 10s), `MAX_POSTS=3`, render XSS-safe con `textContent`, fallback elegante con link directo a Substack.
+- ✅ `index.html` — 4 `.avatar-card` con nombres reemplazados por bloques `.avatar-card` con SVG inline 24×24 (lupa / chip / cerebro / engranaje) + `.avatar-pain` (titular pain-point) + `.avatar-text` (descripción).
+- ✅ `index.html` — copy `#bitacora` actualizado: titular "La IA no te hace mejor ingeniero. *Amplifica al que ya lo es.*" + body verbatim + CTA "Suscríbete y deja de programar en automático" encima del iframe.
+- ✅ `index.html` — banda CTA oscura final con titular "La IA no arregla el pensamiento mediocre. *Lo amplifica.*" + body 30 segundos + link "Leer más en la Bitácora →".
+- ✅ `assets/css/style.css` — nuevos estilos: `.avatar-icon` (32×32, `color: var(--bitacora-accent)`), `.avatar-pain` (Lora 1.15rem 600), `.bitacora-title-accent` (verde + itálica).
+- ✅ Smoke test local (`python3 -m http.server 8765`): index, main.js, JSON y CSS devuelven 200.
+- ✅ Render headless Chrome 320/375/1280 + validación visual con `look_at`: layout limpio, sin overflow, iconos visibles, "Shit in, shit out" como primer post, banda CTA oscura confirmada en desktop.
+- ✅ `README.md` actualizado: eliminada mención `api.allorigins.win`; documentado workflow GH Action + JSON estático + nuevo copy + estructura `.github/workflows/` y `scripts/`.
+
+### Pendiente
+
+- ⏳ Commit atómico Sub-fase B.3 + push + abrir PR #4.
+- ⏳ Merge PR #4 (acción usuario).
+- ⏳ Verificar Settings → Actions → Workflow permissions = "Read and write" en el repo tras push.
+- ⏳ Validar primera ejecución del workflow en CI real (manual dispatch tras merge).
+- ⏳ OG en producción + Lighthouse tras merge.
+
+### Ajustes adicionales en PR #4 (mismo branch, antes del merge)
+
+- ✅ `cron` cambiado de `0 */6 * * *` (cada 6h) a `0 6 * * *` (1×/día a 06:00 UTC) — feedback usuario: "vale con refrescarlo una vez al día".
+- ✅ `actions/checkout@v4` → `@v6` y `actions/setup-node@v4` → `@v6` (versions latest, Node 24-ready) — fix deprecation warning Node.js 20 actions deprecadas (effective June 2026).
+- ✅ `node-version: "20"` → `"24"` (LTS actual, evita futuro warning de runtime).
+- ✅ README sincronizado: `cron 0 6 * * *` (1×/día), `Node 24+`, `GitHub Actions + Node 24`.
+- ✅ Verificado vía `gh api`: `default_workflow_permissions=write` ya configurado en el repo (no requiere acción manual del usuario).
+- ✅ Iframes Substack `height="320"` → `"400"` (ambos: bloque Bitácora + banda CTA oscura final) — fix botón "Suscribirse" + disclaimer legal cortados; verificado headless desktop 1280px.
+- ✅ Fallback graceful en `main.js`: si feed falla o vacío, oculta `#substack-posts` + `.latest-posts-title`. Mantiene visible iframe suscripción + link "Leer más en la Bitácora →" — verbatim requisito usuario; verificado headless con feed `count=0`.
+- ✅ Eliminada función `renderError` (mensaje feo) y CSS-class `.substack-error*` ya no usado (cleanup pendiente en estilo si se quiere).

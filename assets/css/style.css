@@ -486,6 +486,11 @@ h3 {
   letter-spacing: -0.01em;
 }
 
+.bitacora-title-accent {
+  color: var(--bitacora-accent);
+  font-style: italic;
+}
+
 .bitacora-body {
   font-size: 1.05rem;
   line-height: 1.7;
@@ -525,12 +530,21 @@ h3 {
   box-shadow: var(--bitacora-shadow-card);
 }
 
-.avatar-name {
+.avatar-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--bitacora-accent);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.avatar-pain {
   font-family: 'Lora', 'IBM Plex Serif', serif;
   font-size: 1.15rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: var(--bitacora-ink);
+  line-height: 1.3;
 }
 
 .avatar-text {
