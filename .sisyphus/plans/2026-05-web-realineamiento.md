@@ -638,3 +638,59 @@ Métricas core: FCP 0.7s · LCP 0.7s · TBT 0ms · CLS 0.138 (mejorable) · SI n
 - robots.txt + sitemap.xml → buenas prácticas SEO.
 
 Estos quedan agendados como **Sub-fase B.6 (opcional, post-merge PR #11)** para empuje a 100/100/100/100.
+
+---
+
+## Sub-fase B.6 — Hardening A11y + SEO (PR #12, 2026-05-11)
+
+**Trigger**: post-merge PR #11. Recoge los 4 issues residuales detectados en la auditoría B.5 + crea robots.txt/sitemap.xml para SEO completo.
+
+### Cambios aplicados
+
+#### 1. Contraste WCAG AA (3 selectores → todos ≥ 4.5:1)
+
+| Selector | Antes | Ratio antes | Después | Ratio después |
+|---|---|---|---|---|
+| `.bitacora-eyebrow` (badge "LA BITÁCORA…") | `var(--bitacora-accent)` `#3e8e41` | 3.77:1 ❌ | `var(--bitacora-accent-hover)` `#2f6f32` | **5.65:1** ✅ |
+| `.latest-posts-link` ("Leer más en la Bitácora →") | `var(--bitacora-accent)` `#3e8e41` | 3.59:1 ❌ | `var(--bitacora-accent-hover)` `#2f6f32` | **5.38:1** ✅ |
+| `.latest-posts-link:hover` | `var(--bitacora-accent-hover)` | — | `var(--bitacora-ink)` `#1a1a1a` | mejorado (más oscuro en hover) |
+| `.footer-copy` ("© 2026 J.L. González Beltrán") | `#6b7280` | 3.90:1 ❌ | `#4b5563` | **6.10:1** ✅ |
+
+> Decisión: usar `--bitacora-accent-hover` (ya existente, sin nuevas variables) para mantener coherencia de paleta.
+
+#### 2. Aspect ratio LinkedIn icon (`#linkedin-icon` 128×109 px → cuadrado visual)
+
+`assets/css/style.css:266` — `.social-icon img` añadido `object-fit: contain`. El PNG original mantiene 128×109, pero ahora se renderiza sin estiramiento dentro del contenedor 2×2rem.
+
+#### 3. Reserva de espacio iframe Substack (combate CLS desktop 0.138)
+
+`assets/css/style.css:580` (desktop) y `assets/css/style.css:813` (mobile <768px): añadido `min-height: 580px` además del `height: 580px` existente. Reserva slot inicial antes de que el iframe pinte → CLS objetivo < 0.1.
+
+#### 4. SEO archivos canónicos
+
+- **`robots.txt`** (nuevo): `User-agent: * / Allow: / / Sitemap: https://jlgonbe.github.io/sitemap.xml`
+- **`sitemap.xml`** (nuevo): 2 URLs (home + Substack), `lastmod 2026-05-11`, `changefreq weekly`, `priority 1.0/0.8`.
+
+### Verificación
+
+- ✅ CSS balance braces: 128/128.
+- ✅ Server local + headless Chrome 1280×900 + 375×800: contraste OK, LinkedIn proporcionado, sin overflow mobile, sin regresiones visuales.
+- ✅ Ratios WCAG verificados matemáticamente (formula relative luminance W3C).
+- ✅ `robots.txt` HTTP 200, `sitemap.xml` HTTP 200 servidos local.
+
+### Scores objetivo (post-deploy)
+
+| Métrica | Antes B.5 (mobile) | Esperado B.6 |
+|---|---|---|
+| Performance | 99 | 99 |
+| Accessibility | 95 | **100** ⬆ |
+| Best Practices | 96 | **~100** ⬆ |
+| SEO | 100 | 100 |
+| CLS desktop | 0.138 | < 0.1 ⬇ |
+
+### Out-of-scope (sin tocar)
+
+- ❌ Cache headers / HSTS → limitados por GitHub Pages (no controlable).
+- ❌ Regenerar `linkedin-logo.png` a 128×128 → `object-fit: contain` resuelve sin tocar el binario.
+- ❌ Otros checks Lighthouse menores → ROI marginal.
+
