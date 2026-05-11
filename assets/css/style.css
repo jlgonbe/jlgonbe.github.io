@@ -276,21 +276,21 @@ h3 {
   color: #6b7280;
 }
 
-/* Substack Posts Styles */
+/* Substack Posts Styles — paleta editorial Bitácora */
 .substack-posts-container {
   margin-top: auto;
 }
 
 .substack-post {
   display: block;
-  padding: 1rem;
+  padding: 1rem 1.125rem;
   margin-bottom: 0.75rem;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border: 1px solid #e2e8f0;
-  border-radius: 0.75rem;
+  background: var(--bitacora-bg-alt);
+  border: 1px solid var(--bitacora-line);
+  border-radius: var(--bitacora-radius-md);
   text-decoration: none;
   color: inherit;
-  transition: all 0.3s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   position: relative;
   overflow: hidden;
 }
@@ -300,19 +300,19 @@ h3 {
   position: absolute;
   top: 0;
   left: 0;
-  width: 4px;
+  width: 3px;
   height: 100%;
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  background: var(--bitacora-accent);
   transform: scaleY(0);
-  transition: transform 0.3s ease;
+  transform-origin: top;
+  transition: transform 0.2s ease;
 }
 
 .substack-post:hover {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border-color: #3b82f6;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15), 
-              0 8px 10px -6px rgba(59, 130, 246, 0.1);
+  background: var(--bitacora-accent-soft);
+  border-color: var(--bitacora-accent);
+  transform: translateY(-1px);
+  box-shadow: var(--bitacora-shadow-card);
   color: inherit;
 }
 
@@ -321,30 +321,25 @@ h3 {
 }
 
 .substack-post-title {
-  font-size: 0.95rem;
+  font-family: 'Lora', Georgia, serif;
+  font-size: 1rem;
   font-weight: 600;
   line-height: 1.4;
   margin-bottom: 0.5rem;
-  color: #1e293b;
-  transition: color 0.3s ease;
+  color: var(--bitacora-ink);
+  transition: color 0.2s ease;
 }
 
 .substack-post:hover .substack-post-title {
-  color: #1d4ed8;
+  color: var(--bitacora-accent-hover);
 }
 
 .substack-post-date {
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 0.75rem;
-  color: #64748b;
-  font-family: 'IBM Plex Mono', monospace;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.substack-post-date::before {
-  content: '📅';
-  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--bitacora-ink-muted);
 }
 
 .substack-loading {
