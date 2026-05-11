@@ -481,9 +481,160 @@ Fuente: `https://revisar-codigo-ia.bitacoradeuningenierodesoftware.com/_astro/Fo
 
 ### Pendientes globales tras PR #9
 
+> Algunos puntos quedan superados por Sub-fase B.4 (mobile 375px) más abajo y se vuelven a tratar en su sección dedicada.
+
 - ⏳ Validar primer run real del workflow `refresh-substack-feed.yml` en CI vía cadena Jina (esperar cron `0 6 * * *` o lanzar `workflow_dispatch` manual) — confirmar `assets/data/substack-feed.json` regenerado con `source: "jina"` o `source: "rss"` según resuelva.
-- ⏳ Mobile responsive global a 375px sigue roto pre-existente (avatares, copy, social icons) — bug de scope mayor, NO abordado en esta tanda.
+- ✅ Mobile responsive global a 375px → abordado en **Sub-fase B.4** (ver más abajo).
 - ⏳ Validación OG en producción (LinkedIn Post Inspector / Twitter Card Validator / Facebook Debugger) con URL definitiva.
 - ⏳ Lighthouse audit completo (Performance / Accessibility / Best Practices / SEO).
 - ⏳ Sub-fase C del plan original (si aplica tras revalidación de scope).
 - ⏳ Fases 2 (Captación y conversión 💰) y 3 (Visibilidad y escalado 🚀).
+
+---
+
+## Sub-fase B.4 — Hardening responsive 375px (solicitado 2026-05-11 tras merge PR #10)
+
+### Contexto
+
+Auditoría de responsive a viewport iPhone SE (375px) para cerrar Fase 1 antes de validar OG en producción y ejecutar Lighthouse audit.
+
+### Diagnóstico
+
+- Agente `explore` auditó la home y reportó 12 puntos de mejora responsive (selectores, líneas, fixes sugeridos).
+- Validación técnica con detector JS in-browser (`getBoundingClientRect` sobre todos los elementos): **0 offenders reales** (`docScrollW == bodyScrollW == VW`). No hay overflow horizontal real.
+- Las anomalías visuales en screenshots iniciales (texto cortado uniformemente) eran **artefactos de Chrome headless**: con `--force-device-scale-factor=2 --window-size=375` el viewport CSS efectivo se renderiza como 500px, no 375px.
+- **Conclusión**: el sitio NO tiene overflow real a 375px en navegador real. Aun así se aplican mejoras defensivas para robustez ante strings largos editoriales no controlables, iframes externos con atributos legacy y futuras imágenes que pudieran exceder contenedor.
+
+### Cambios aplicados
+
+**`assets/css/style.css`** (9 ediciones):
+
+- ✅ `.main-title` (L69) — `+overflow-wrap: anywhere` (defensivo strings largos hero).
+- ✅ `.section-title` (L99) — `+overflow-wrap: anywhere`.
+- ✅ `.card-title` (L145) — `+overflow-wrap: anywhere`.
+- ✅ `.bitacora-title` (L474) — `+overflow-wrap: anywhere` (titulares editoriales largos).
+- ✅ `.bitacora-cta-band-title` (L636) — `+overflow-wrap: anywhere`.
+- ✅ `.card` (L135) — `+min-width: 0` (permite shrink en grid/flex sin desbordar).
+- ✅ `.avatar-card` (L514) — `+min-width: 0` (mismo fix para tarjetas pain-points).
+- ✅ `.profile-image` (L62) — `+max-width: 100%` (defensivo; preservado `border-radius: 50%` y aspect 1:1, NO se añadió `height: auto`).
+- ✅ `.substack-embed-wrapper iframe` (L573) — `width: 480px` → `width: 100%; max-width: 480px`. Preservado `height: 580px` (requisito explícito usuario).
+
+**`index.html`** (2 ediciones):
+
+- ✅ Iframe Substack bloque Bitácora (~L121) — eliminados atributos legacy `width="480" height="400"`. CSS controla sizing exclusivamente.
+- ✅ Iframe Substack banda CTA oscura (~L202) — mismo fix.
+
+### Verificación
+
+- ✅ Detector JS in-browser sobre el sitio: 0 offenders, `docScrollW == VW` (sin overflow horizontal).
+- ✅ Sin regresión visual en desktop (cambios aditivos / defensivos).
+- ✅ `height: 580px` iframe Substack preservado en ambos puntos.
+- ✅ Aspect 1:1 `.profile-image` preservado.
+- ✅ `git diff --stat`: 2 files changed, 10 insertions(+), 6 deletions(-).
+
+### Pendiente
+
+- ⏳ Merge PR #11 `style/mobile-375-fixes` (acción usuario).
+- ⏳ Validación OG producción tras merge: LinkedIn Post Inspector, Twitter Card Validator, Facebook Sharing Debugger.
+- ⏳ Lighthouse audit baseline (Performance, Accessibility, Best Practices, SEO).
+- ⏳ Documentar resultados Lighthouse en este plan + posibles fixes derivados.
+
+### Decisiones clave
+
+- Aplicado fix completo (9 mejoras CSS + 2 HTML) en lugar de solo el crítico (iframe), por decisión del usuario "Fix completo".
+- Eliminados atributos HTML legacy de iframes; CSS = single source of truth.
+- NO añadir `height: auto` a `.profile-image` para no romper el círculo del avatar.
+- Iframe Substack height 580px confirmado en ambos viewports (requisito usuario sesión anterior, preservado).
+
+---
+
+## Sub-fase B.5 — Audit OG + Lighthouse baseline producción (2026-05-11)
+
+### Contexto
+
+Audit de cierre Fase 1 sobre `https://jlgonbe.github.io/` (producción actual, **pre-merge PR #11**) para validar OG meta tags, manifest/favicons y obtener baseline Lighthouse.
+
+### Resultados OG / SEO / Manifest
+
+✅ **Meta tags Open Graph completos**:
+- `og:type=website`, `og:locale=es_ES`, `og:site_name`, `og:url`, `og:title`, `og:description`, `og:image`, `og:image:width=1200`, `og:image:height=630`, `og:image:alt`.
+
+✅ **Twitter Card**:
+- `twitter:card=summary_large_image`, `twitter:site=@jlgonbe`, `twitter:creator=@jlgonbe`, `twitter:title`, `twitter:description`, `twitter:image`.
+
+✅ **OG image producción**:
+- `https://jlgonbe.github.io/assets/images/og-image.jpg` → HTTP 200, JPEG 1200×630, 60781 bytes, content-type correcto.
+
+✅ **Manifest PWA**:
+- `site.webmanifest` → HTTP 200, JSON válido, theme_color `#1F3B4D`, 2 icons (192 + 512).
+
+✅ **Favicons** (todos HTTP 200): `favicon.ico`, `favicon.svg`, `favicon-16.png`, `favicon-32.png`, `favicon-192.png`, `favicon-512.png`, `apple-touch-icon.png`.
+
+✅ **Profile images**: `profile.webp` + `profile.jpg` HTTP 200 (referencia fallback `<picture>`).
+
+❌ **Hallazgos a corregir**:
+- `https://jlgonbe.github.io/robots.txt` → HTTP 404 (no existe en repo).
+- `https://jlgonbe.github.io/sitemap.xml` → HTTP 404 (no existe en repo).
+
+### Resultados Lighthouse (mobile + desktop)
+
+**MOBILE** (Moto G Power emulado, 4G slow):
+| Categoría | Score |
+|-----------|-------|
+| Performance | **99** |
+| Accessibility | **95** |
+| Best Practices | **96** |
+| SEO | **100** ✅ |
+
+Métricas core: FCP 1.8s · LCP 1.8s · TBT 0ms · CLS 0.02 · SI 1.8s · TTI 1.8s.
+
+**DESKTOP** (1920×1080, throttling no):
+| Categoría | Score |
+|-----------|-------|
+| Performance | **94** |
+| Accessibility | **95** |
+| Best Practices | **96** |
+| SEO | **100** ✅ |
+
+Métricas core: FCP 0.7s · LCP 0.7s · TBT 0ms · CLS 0.138 (mejorable) · SI n/a.
+
+### Issues accionables detectados (priorizar como Sub-fase B.6)
+
+1. ⚠️ **WCAG AA color-contrast fallido (3 elementos)** — el accent verde `#3e8e41` falla ratio 4.5:1 sobre fondos claros:
+   - `.bitacora-eyebrow` `#3e8e41` / `#f1f8f1` → ratio **3.77** (necesita ≥4.5)
+   - `.latest-posts-link` `#3e8e41` / `#f4f1e1` → ratio **3.59** (necesita ≥4.5)
+   - `.footer-copy` `#6b7280` / `#e5e7eb` → ratio **3.9** (necesita ≥4.5)
+   - **Fix propuesto**: usar `--bitacora-accent-hover: #2f6f32` (más oscuro) en estos 3 selectores; oscurecer `.footer-copy` a `#4b5563` o similar.
+
+2. ⚠️ **Aspect ratio incorrecto** en `assets/icons/linkedin-logo.png`:
+   - Mostrado 24×24 (1.00), archivo real 128×109 (1.17). Distorsión visual ligera.
+   - **Fix propuesto**: regenerar PNG con aspect 1:1 (128×128) o ajustar CSS `object-fit: contain`.
+
+3. ⚠️ **CLS desktop = 0.138** (tolerable pero >0.1 = "needs improvement"):
+   - Probable causa: iframe Substack sin `height` reservado en CSS antes de cargar (aunque `height: 580px` está en CSS, el iframe puede causar shift al hidratar el contenido externo). Investigar si añadir `min-height` ayuda.
+
+4. ⚠️ **Falta robots.txt + sitemap.xml** (no afectan score Lighthouse mobile actual = 100, pero best practice SEO):
+   - Crear `robots.txt` simple con `User-agent: * / Allow: / / Sitemap: https://jlgonbe.github.io/sitemap.xml`.
+   - Crear `sitemap.xml` con 1 URL (home).
+
+### Validators externos pendientes (acción usuario tras merge)
+
+- ⏳ [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/inspect/https%3A%2F%2Fjlgonbe.github.io%2F) — pegar URL `https://jlgonbe.github.io/`.
+- ⏳ [Twitter/X Card Validator](https://cards-dev.twitter.com/validator) — herramienta deprecada por X; alternativa: postear test desde `@jlgonbe` y verificar render.
+- ⏳ [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/?q=https%3A%2F%2Fjlgonbe.github.io%2F) — scrape + verificar imagen 1200×630.
+
+### Reportes guardados
+
+- `/tmp/lighthouse-jlgonbe/jlgonbe-prod.report.html` (mobile, 974KB navegable).
+- `/tmp/lighthouse-jlgonbe/jlgonbe-prod.report.json` (mobile, raw).
+- `/tmp/lighthouse-jlgonbe/jlgonbe-prod-desktop` (desktop JSON).
+
+### Decisión Fase 1
+
+✅ **Fase 1 técnicamente completada**. Scores Lighthouse excelentes (SEO 100 / Perf 99 mobile). Issues residuales son **mejoras incrementales** no bloqueantes:
+- Accessibility 95 → potencial 100 con fixes contraste.
+- Best Practices 96 → potencial 100 con fixes aspect ratio + cache headers (limitados por GitHub Pages).
+- CLS 0.138 desktop → mejora opcional iframe.
+- robots.txt + sitemap.xml → buenas prácticas SEO.
+
+Estos quedan agendados como **Sub-fase B.6 (opcional, post-merge PR #11)** para empuje a 100/100/100/100.
