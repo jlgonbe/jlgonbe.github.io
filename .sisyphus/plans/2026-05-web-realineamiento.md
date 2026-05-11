@@ -481,9 +481,67 @@ Fuente: `https://revisar-codigo-ia.bitacoradeuningenierodesoftware.com/_astro/Fo
 
 ### Pendientes globales tras PR #9
 
+> Algunos puntos quedan superados por Sub-fase B.4 (mobile 375px) más abajo y se vuelven a tratar en su sección dedicada.
+
 - ⏳ Validar primer run real del workflow `refresh-substack-feed.yml` en CI vía cadena Jina (esperar cron `0 6 * * *` o lanzar `workflow_dispatch` manual) — confirmar `assets/data/substack-feed.json` regenerado con `source: "jina"` o `source: "rss"` según resuelva.
-- ⏳ Mobile responsive global a 375px sigue roto pre-existente (avatares, copy, social icons) — bug de scope mayor, NO abordado en esta tanda.
+- ✅ Mobile responsive global a 375px → abordado en **Sub-fase B.4** (ver más abajo).
 - ⏳ Validación OG en producción (LinkedIn Post Inspector / Twitter Card Validator / Facebook Debugger) con URL definitiva.
 - ⏳ Lighthouse audit completo (Performance / Accessibility / Best Practices / SEO).
 - ⏳ Sub-fase C del plan original (si aplica tras revalidación de scope).
 - ⏳ Fases 2 (Captación y conversión 💰) y 3 (Visibilidad y escalado 🚀).
+
+---
+
+## Sub-fase B.4 — Hardening responsive 375px (solicitado 2026-05-11 tras merge PR #10)
+
+### Contexto
+
+Auditoría de responsive a viewport iPhone SE (375px) para cerrar Fase 1 antes de validar OG en producción y ejecutar Lighthouse audit.
+
+### Diagnóstico
+
+- Agente `explore` auditó la home y reportó 12 puntos de mejora responsive (selectores, líneas, fixes sugeridos).
+- Validación técnica con detector JS in-browser (`getBoundingClientRect` sobre todos los elementos): **0 offenders reales** (`docScrollW == bodyScrollW == VW`). No hay overflow horizontal real.
+- Las anomalías visuales en screenshots iniciales (texto cortado uniformemente) eran **artefactos de Chrome headless**: con `--force-device-scale-factor=2 --window-size=375` el viewport CSS efectivo se renderiza como 500px, no 375px.
+- **Conclusión**: el sitio NO tiene overflow real a 375px en navegador real. Aun así se aplican mejoras defensivas para robustez ante strings largos editoriales no controlables, iframes externos con atributos legacy y futuras imágenes que pudieran exceder contenedor.
+
+### Cambios aplicados
+
+**`assets/css/style.css`** (9 ediciones):
+
+- ✅ `.main-title` (L69) — `+overflow-wrap: anywhere` (defensivo strings largos hero).
+- ✅ `.section-title` (L99) — `+overflow-wrap: anywhere`.
+- ✅ `.card-title` (L145) — `+overflow-wrap: anywhere`.
+- ✅ `.bitacora-title` (L474) — `+overflow-wrap: anywhere` (titulares editoriales largos).
+- ✅ `.bitacora-cta-band-title` (L636) — `+overflow-wrap: anywhere`.
+- ✅ `.card` (L135) — `+min-width: 0` (permite shrink en grid/flex sin desbordar).
+- ✅ `.avatar-card` (L514) — `+min-width: 0` (mismo fix para tarjetas pain-points).
+- ✅ `.profile-image` (L62) — `+max-width: 100%` (defensivo; preservado `border-radius: 50%` y aspect 1:1, NO se añadió `height: auto`).
+- ✅ `.substack-embed-wrapper iframe` (L573) — `width: 480px` → `width: 100%; max-width: 480px`. Preservado `height: 580px` (requisito explícito usuario).
+
+**`index.html`** (2 ediciones):
+
+- ✅ Iframe Substack bloque Bitácora (~L121) — eliminados atributos legacy `width="480" height="400"`. CSS controla sizing exclusivamente.
+- ✅ Iframe Substack banda CTA oscura (~L202) — mismo fix.
+
+### Verificación
+
+- ✅ Detector JS in-browser sobre el sitio: 0 offenders, `docScrollW == VW` (sin overflow horizontal).
+- ✅ Sin regresión visual en desktop (cambios aditivos / defensivos).
+- ✅ `height: 580px` iframe Substack preservado en ambos puntos.
+- ✅ Aspect 1:1 `.profile-image` preservado.
+- ✅ `git diff --stat`: 2 files changed, 10 insertions(+), 6 deletions(-).
+
+### Pendiente
+
+- ⏳ Merge PR #11 `style/mobile-375-fixes` (acción usuario).
+- ⏳ Validación OG producción tras merge: LinkedIn Post Inspector, Twitter Card Validator, Facebook Sharing Debugger.
+- ⏳ Lighthouse audit baseline (Performance, Accessibility, Best Practices, SEO).
+- ⏳ Documentar resultados Lighthouse en este plan + posibles fixes derivados.
+
+### Decisiones clave
+
+- Aplicado fix completo (9 mejoras CSS + 2 HTML) en lugar de solo el crítico (iframe), por decisión del usuario "Fix completo".
+- Eliminados atributos HTML legacy de iframes; CSS = single source of truth.
+- NO añadir `height: auto` a `.profile-image` para no romper el círculo del avatar.
+- Iframe Substack height 580px confirmado en ambos viewports (requisito usuario sesión anterior, preservado).
