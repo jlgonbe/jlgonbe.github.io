@@ -15,9 +15,10 @@ Sitio estático construido con **HTML5, CSS3 y JavaScript vanilla**. Sin framewo
 
 ### ✨ Características
 
-- **🎨 CSS personalizado** — Sin frameworks, paleta sobria (`#E5E7EB` / `#1C1C1C` / `#1F3B4D` / `#9AC8E2`)
+- **🎨 CSS personalizado** — Sin frameworks, paleta sobria (`#E5E7EB` / `#1C1C1C` / `#1F3B4D` / `#9AC8E2`) + paleta editorial Bitácora (`#f4f1e1` / `#1a1a1a` / `#3e8e41`)
 - **📱 Responsive** — Mobile-first, validado en 320 / 375 / 768 / 1280 px
-- **📰 Bloque Bitácora destacado** — Manifiesto + 4 perfiles "¿Te suena?" + iframe Substack + últimas entradas vía RSS
+- **📰 Bloque Bitácora destacado** — Manifiesto enfocado a IA + 4 pain points "¿Te suena?" con iconos SVG + iframe Substack + últimas entradas
+- **🤖 Feed Substack vía GitHub Action** — JSON estático refrescado cada 6h, sin proxies CORS de terceros
 - **🔍 SEO + OG + Twitter Cards** — Meta tags completos, OG image 1200×630, canonical, manifest, favicons multi-tamaño
 - **🖼️ Imágenes optimizadas** — `<picture>` con WebP + JPEG fallback (~3.5 MB ahorrados respecto a la versión anterior)
 - **🔐 JS XSS-safe** — Fetch nativo (sin `axios`), `textContent` para inyectar contenido dinámico, `AbortController` para timeouts
@@ -29,11 +30,17 @@ jlgonbe.github.io/
 ├── index.html                       # Página principal (1 sola página)
 ├── site.webmanifest                 # PWA manifest
 ├── params.json                      # Configuración GitHub Pages
+├── .github/workflows/
+│   └── refresh-substack-feed.yml    # Action: refresca feed cada 6h + dispatch manual
+├── scripts/
+│   └── refresh-substack-feed.mjs    # Node 20+ fetch RSS → JSON estático
 ├── assets/
 │   ├── css/
 │   │   └── style.css                # Estilos (vanilla, ~600 líneas)
 │   ├── js/
-│   │   └── main.js                  # Fetch RSS Substack + render
+│   │   └── main.js                  # Fetch JSON local + render últimas entradas
+│   ├── data/
+│   │   └── substack-feed.json       # Snapshot generado por la Action
 │   ├── images/
 │   │   ├── profile.{webp,jpg,svg}   # Avatar (WebP + JPEG fallback)
 │   │   ├── og-image.{jpg,svg}       # Open Graph 1200×630
@@ -59,35 +66,39 @@ jlgonbe.github.io/
 |------------|-----------|
 | **HTML5 semántico** | Estructura, accesibilidad, SEO |
 | **CSS3** | Estilos, grid, responsive (sin frameworks) |
-| **JavaScript ES6+ vanilla** | `fetch` nativo + `AbortController` para feed RSS |
-| **Google Fonts** | IBM Plex Serif (titulares) + Inter (cuerpo) + IBM Plex Mono (acentos) |
-| **api.allorigins.win** | Proxy CORS para parsear el RSS de Substack desde el navegador |
+| **JavaScript ES6+ vanilla** | `fetch` nativo + `AbortController` para cargar el JSON local del feed |
+| **Google Fonts** | IBM Plex Serif + Inter + IBM Plex Mono (marca personal) y Lora + Inter (bloque editorial Bitácora) |
+| **GitHub Actions + Node 20** | Workflow programado (cron `0 */6 * * *` + dispatch) que refresca `assets/data/substack-feed.json` desde el RSS de Substack |
 | **iframe Substack** | Form de suscripción embebido (transparente, lazy-loaded) |
 
 ## 📐 Arquitectura de la página
 
 1. **Hero** — Identidad triple ("Ingeniero. Triatleta. Aprendiz constante.") + tagline + puente a la Bitácora.
 2. **Bloque Bitácora destacado** (sección principal):
-   - Manifiesto verbatim de la newsletter.
-   - 4 tarjetas "¿Te suena?" con perfiles de lectores ideales (Carlos / Laura / Jorge / Marta).
-   - Iframe de suscripción a Substack.
-   - Últimas 3 entradas cargadas dinámicamente desde el RSS.
-3. **Otros frentes** — 2 cards: Triatlón en Instagram + El laboratorio (GitHub).
-4. **Conecta conmigo** — Iconos sociales (X, LinkedIn, Substack, GitHub).
-5. **Footer** — Manifiesto personal + copyright.
+   - Manifiesto enfocado a IA: "La IA no te hace mejor ingeniero. Amplifica al que ya lo es."
+   - 4 tarjetas "¿Te suena?" con pain points e iconos SVG inline (lupa, chip, cerebro, engranaje) — sin nombres ficticios.
+   - CTA + iframe de suscripción a Substack.
+   - Últimas 3 entradas cargadas desde JSON estático (`assets/data/substack-feed.json`).
+3. **Banda CTA oscura** — "La IA no arregla el pensamiento mediocre. Lo amplifica." + 2º iframe + link al dominio custom.
+4. **Otros frentes** — 2 cards: Triatlón en Instagram + El laboratorio (GitHub).
+5. **Conecta conmigo** — Iconos sociales (X, LinkedIn, Substack, GitHub).
+6. **Footer** — Manifiesto personal + copyright.
 
 ## ⚙️ Funcionalidades dinámicas
 
-### 📡 Feed RSS de Substack
+### 📡 Feed de Substack (sin proxies de terceros)
 
-- Carga las 3 últimas entradas de [bitacoradeuningenierodesoftware.substack.com](https://bitacoradeuningenierodesoftware.substack.com).
-- Proxy CORS via `api.allorigins.win` para parsear el feed XML desde el navegador.
-- `AbortController` con timeout para evitar peticiones colgadas.
-- Render XSS-safe con `textContent` (no `innerHTML` con strings sin sanitizar).
-- Fallback elegante con enlace directo a Substack si la carga falla.
+- **Fuente**: RSS de [bitacoradeuningenierodesoftware.substack.com/feed](https://bitacoradeuningenierodesoftware.substack.com/feed).
+- **Refresco**: GitHub Action `refresh-substack-feed.yml` ejecuta `scripts/refresh-substack-feed.mjs` cada 6h (cron `0 */6 * * *`) y bajo demanda (`workflow_dispatch`).
+- **Salida**: `assets/data/substack-feed.json` con las 3 últimas entradas (`title`, `link`, `pubDate`, `description`).
+- **Commit del bot**: el workflow commitea con `[skip ci]` para evitar loops; usa `concurrency` para serializar runs.
+- **Frontend**: `main.js` hace `fetch('assets/data/substack-feed.json')` con `AbortController` (timeout 10s) y renderiza con `textContent` (XSS-safe).
+- **Fallback**: si el JSON falla a cargar, se muestra un enlace directo a Substack.
+- **Permisos requeridos** en el repo: Settings → Actions → Workflow permissions = "Read and write".
 
 ### 📧 Suscripción a la newsletter
 
+- 2 puntos de captura: iframe en el bloque Bitácora + iframe en la banda CTA oscura final.
 - Iframe embebido oficial de Substack (`?transparent=1`).
 - `loading="lazy"` para no penalizar el First Contentful Paint.
 - Responsive: ancho 100% en mobile.
@@ -102,6 +113,15 @@ python3 -m http.server 8000      # http://localhost:8000
 npx serve .                      # http://localhost:3000
 open index.html                  # Abrir directo en el navegador
 ```
+
+### Refrescar el feed manualmente
+
+```bash
+node scripts/refresh-substack-feed.mjs
+# Genera/actualiza assets/data/substack-feed.json con las 3 últimas entradas.
+```
+
+> Requiere Node 20+ (usa `fetch` nativo, sin dependencias npm).
 
 ## 🌐 Despliegue
 

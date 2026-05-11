@@ -1,0 +1,42 @@
+name: Refresh Substack feed
+
+on:
+  schedule:
+    # Every 6 hours, on the hour
+    - cron: "0 */6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-substack-feed
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Refresh feed JSON
+        run: node scripts/refresh-substack-feed.mjs
+
+      - name: Commit changes if any
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- assets/data/substack-feed.json; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git add assets/data/substack-feed.json
+          git commit -m "chore(feed): refresh Substack feed snapshot [skip ci]"
+          git push
