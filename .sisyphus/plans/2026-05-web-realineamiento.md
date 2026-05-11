@@ -418,3 +418,14 @@ Fuente: `https://revisar-codigo-ia.bitacoradeuningenierodesoftware.com/_astro/Fo
 - ✅ Iframes Substack `height="320"` → `"400"` (ambos: bloque Bitácora + banda CTA oscura final) — fix botón "Suscribirse" + disclaimer legal cortados; verificado headless desktop 1280px.
 - ✅ Fallback graceful en `main.js`: si feed falla o vacío, oculta `#substack-posts` + `.latest-posts-title`. Mantiene visible iframe suscripción + link "Leer más en la Bitácora →" — verbatim requisito usuario; verificado headless con feed `count=0`.
 - ✅ Eliminada función `renderError` (mensaje feo) y CSS-class `.substack-error*` ya no usado (cleanup pendiente en estilo si se quiere).
+
+### Hotfix post-merge — workflow 403 desde IPs de runners (PR #5)
+
+- **Síntoma**: primer `workflow_dispatch` manual tras merge PR #4 falló con `HTTP 403 Forbidden` al fetch del RSS.
+- **Causa**: Cloudflare bloquea por reputación de IP (datacenter Azure US del runner GitHub Actions). Desde cualquier IP residencial responde 200 con cualquier UA.
+- **Fix**: refactor `scripts/refresh-substack-feed.mjs` con estrategia 2-capas:
+  1. Intenta RSS con UA navegador realista (Chrome 124 Linux).
+  2. Si RSS falla (403/404/timeout), fallback automático a `/api/v1/posts?limit=3` (API JSON oficial Substack, sin restricciones anti-bot).
+- **Mapping API → schema interno**: `canonical_url` → `link`, `post_date` → `pubDate`, resto idéntico.
+- **Verificado local**: ambas rutas funcionan; RSS devuelve 16 items (slice 3), API devuelve 3 directos.
+- **Branch**: `hotfix/substack-403-fallback`.
