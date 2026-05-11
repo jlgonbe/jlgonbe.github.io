@@ -15,10 +15,11 @@ Sitio estático construido con **HTML5, CSS3 y JavaScript vanilla**. Sin framewo
 
 ### ✨ Características
 
-- **🎨 CSS personalizado** — Sin frameworks, paleta sobria (`#E5E7EB` / `#1C1C1C` / `#1F3B4D` / `#9AC8E2`) + paleta editorial Bitácora (`#f4f1e1` / `#1a1a1a` / `#3e8e41`)
+- **🎨 CSS personalizado** — Sin frameworks, paleta sobria (`#E5E7EB` / `#1C1C1C` / `#1F3B4D` / `#9AC8E2`) + paleta editorial Bitácora (`--bitacora-bg #f4f1e1` / `--bitacora-ink #1a1a1a` / `--bitacora-accent #3e8e41` / `--bitacora-warm #e8a87c` / `--bitacora-line #e6e1cf`)
 - **📱 Responsive** — Mobile-first, validado en 320 / 375 / 768 / 1280 px
-- **📰 Bloque Bitácora destacado** — Manifiesto enfocado a IA + 4 pain points "¿Te suena?" con iconos SVG + iframe Substack + últimas entradas
-- **🤖 Feed Substack vía GitHub Action** — JSON estático refrescado cada 6h, sin proxies CORS de terceros
+- **📰 Bloque Bitácora destacado** — Manifiesto enfocado a IA + 4 pain points "¿Te suena?" con iconos SVG + iframe Substack (580px) + últimas entradas con paleta editorial unificada (Lora título / Inter fecha / accent verde)
+- **🤖 Feed Substack vía GitHub Action** — JSON estático refrescado 1×/día con cadena de fallback de 3 capas (RSS → API JSON directa → proxy `r.jina.ai`), sin dependencias de proxies CORS de terceros en el navegador
+- **🚀 Despliegue Pages vía workflow propio** — `pages.yml` con actions Node 24 (sin warnings de Node 20 deprecation)
 - **🔍 SEO + OG + Twitter Cards** — Meta tags completos, OG image 1200×630, canonical, manifest, favicons multi-tamaño
 - **🖼️ Imágenes optimizadas** — `<picture>` con WebP + JPEG fallback (~3.5 MB ahorrados respecto a la versión anterior)
 - **🔐 JS XSS-safe** — Fetch nativo (sin `axios`), `textContent` para inyectar contenido dinámico, `AbortController` para timeouts
@@ -31,12 +32,13 @@ jlgonbe.github.io/
 ├── site.webmanifest                 # PWA manifest
 ├── params.json                      # Configuración GitHub Pages
 ├── .github/workflows/
+│   ├── pages.yml                    # Action: deploy a GitHub Pages (Node 24, reemplaza pages-build-deployment legacy)
 │   └── refresh-substack-feed.yml    # Action: refresca feed 1×/día + dispatch manual
 ├── scripts/
-│   └── refresh-substack-feed.mjs    # Node 24+ fetch RSS → JSON estático
+│   └── refresh-substack-feed.mjs    # Node 24+ fetch RSS + API + Jina fallback → JSON estático
 ├── assets/
 │   ├── css/
-│   │   └── style.css                # Estilos (vanilla, ~600 líneas)
+│   │   └── style.css                # Estilos (vanilla, ~830 líneas)
 │   ├── js/
 │   │   └── main.js                  # Fetch JSON local + render últimas entradas
 │   ├── data/
@@ -86,20 +88,24 @@ jlgonbe.github.io/
 
 ## ⚙️ Funcionalidades dinámicas
 
-### 📡 Feed de Substack (sin proxies de terceros)
+### 📡 Feed de Substack (sin proxies de terceros en el navegador)
 
-- **Fuente**: RSS de [bitacoradeuningenierodesoftware.substack.com/feed](https://bitacoradeuningenierodesoftware.substack.com/feed).
+- **Fuentes (cadena de fallback de 3 capas)**:
+  1. **RSS** oficial de [bitacoradeuningenierodesoftware.substack.com/feed](https://bitacoradeuningenierodesoftware.substack.com/feed) con User-Agent de navegador.
+  2. **API JSON** directa: `https://bitacoradeuningenierodesoftware.substack.com/api/v1/posts?limit=3`.
+  3. **Proxy `r.jina.ai`** sobre la URL de la API (`https://r.jina.ai/<API_URL>`) con header `X-Return-Format: text`, desempaquetando `wrapper.data.text` y re-parseando JSON. Plan B cuando Substack bloquea IPs de GitHub Actions con HTTP 403.
 - **Refresco**: GitHub Action `refresh-substack-feed.yml` ejecuta `scripts/refresh-substack-feed.mjs` 1 vez al día a las 06:00 UTC (cron `0 6 * * *`) y bajo demanda (`workflow_dispatch`).
-- **Salida**: `assets/data/substack-feed.json` con las 3 últimas entradas (`title`, `link`, `pubDate`, `description`).
+- **Salida**: `assets/data/substack-feed.json` con las 3 últimas entradas (`title`, `link`, `pubDate`, `description`) + metadatos `source` (rss / api / jina) y `fetchedAt`.
 - **Commit del bot**: el workflow commitea con `[skip ci]` para evitar loops; usa `concurrency` para serializar runs.
 - **Frontend**: `main.js` hace `fetch('assets/data/substack-feed.json')` con `AbortController` (timeout 10s) y renderiza con `textContent` (XSS-safe).
-- **Fallback**: si el JSON falla a cargar, se muestra un enlace directo a Substack.
+- **Fallback graceful frontend**: si el JSON falla a cargar o llega vacío, se oculta la lista de posts y se muestra solo el CTA "Suscribirse" + "Leer más en la Bitácora".
 - **Permisos requeridos** en el repo: Settings → Actions → Workflow permissions = "Read and write".
 
 ### 📧 Suscripción a la newsletter
 
 - 2 puntos de captura: iframe en el bloque Bitácora + iframe en la banda CTA oscura final.
 - Iframe embebido oficial de Substack (`?transparent=1`).
+- **Altura**: 580px en ambos viewports (desktop + mobile) — espacio suficiente para botón "Suscribirse" + disclaimer Substack sin solapamientos.
 - `loading="lazy"` para no penalizar el First Contentful Paint.
 - Responsive: ancho 100% en mobile.
 
@@ -125,11 +131,15 @@ node scripts/refresh-substack-feed.mjs
 
 ## 🌐 Despliegue
 
-Despliegue automático en **GitHub Pages** desde la rama `master`:
+Despliegue automático en **GitHub Pages** desde la rama `master` mediante workflow propio (`.github/workflows/pages.yml`):
 
 - **URL**: <https://jlgonbe.github.io>
 - **HTTPS**: Habilitado por defecto
-- **Cada push a `master`** → re-deploy automático
+- **Cada push a `master`** → workflow `pages.yml` build + deploy automático (≈30s)
+- **Modelo**: GitHub Actions (no "Deploy from a branch") — requiere Settings → Pages → Source = "GitHub Actions"
+- **Stack**: `actions/checkout@v6` + `actions/configure-pages@v6` + `actions/upload-pages-artifact@v5` + `actions/deploy-pages@v5` (todas Node 24, sin warnings de deprecation)
+- **Concurrency**: grupo `pages` con `cancel-in-progress: false` (no abortar deploys a medias)
+- **Permisos mínimos**: `contents: read`, `pages: write`, `id-token: write`
 
 ## 🧪 Validación
 
