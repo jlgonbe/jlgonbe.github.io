@@ -46,25 +46,14 @@ function renderPost(container, post) {
     container.appendChild(article);
 }
 
-function renderError(container) {
+function hidePostsListShowOnlyLink(container) {
     container.innerHTML = "";
-    const wrap = document.createElement("div");
-    wrap.className = "substack-error";
-
-    const text = document.createElement("div");
-    text.className = "substack-error-text";
-    text.textContent = "No se pudo cargar el feed de Substack.";
-    wrap.appendChild(text);
-
-    const link = document.createElement("a");
-    link.href = `https://${SUBSTACK_USERNAME}.substack.com`;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.className = "substack-error-link";
-    link.textContent = "Visitar directamente →";
-    wrap.appendChild(link);
-
-    container.appendChild(wrap);
+    container.style.display = "none";
+    const block = container.closest(".latest-posts-block");
+    if (block) {
+        const title = block.querySelector(".latest-posts-title");
+        if (title) title.style.display = "none";
+    }
 }
 
 async function loadSubstackPosts() {
@@ -80,7 +69,7 @@ async function loadSubstackPosts() {
         const payload = await response.json();
         const posts = Array.isArray(payload?.posts) ? payload.posts.slice(0, MAX_POSTS) : [];
         if (posts.length === 0) {
-            container.innerHTML = "<div class='substack-empty'>No hay publicaciones disponibles.</div>";
+            hidePostsListShowOnlyLink(container);
             return;
         }
 
@@ -89,7 +78,7 @@ async function loadSubstackPosts() {
         posts.forEach((post) => renderPost(container, post));
     } catch (error) {
         console.error("Error loading Substack feed:", error);
-        renderError(container);
+        hidePostsListShowOnlyLink(container);
     }
 }
 

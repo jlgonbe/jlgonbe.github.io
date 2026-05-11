@@ -415,3 +415,6 @@ Fuente: `https://revisar-codigo-ia.bitacoradeuningenierodesoftware.com/_astro/Fo
 - ✅ `node-version: "20"` → `"24"` (LTS actual, evita futuro warning de runtime).
 - ✅ README sincronizado: `cron 0 6 * * *` (1×/día), `Node 24+`, `GitHub Actions + Node 24`.
 - ✅ Verificado vía `gh api`: `default_workflow_permissions=write` ya configurado en el repo (no requiere acción manual del usuario).
+- ✅ Iframes Substack `height="320"` → `"400"` (ambos: bloque Bitácora + banda CTA oscura final) — fix botón "Suscribirse" + disclaimer legal cortados; verificado headless desktop 1280px.
+- ✅ Fallback graceful en `main.js`: si feed falla o vacío, oculta `#substack-posts` + `.latest-posts-title`. Mantiene visible iframe suscripción + link "Leer más en la Bitácora →" — verbatim requisito usuario; verificado headless con feed `count=0`.
+- ✅ Eliminada función `renderError` (mensaje feo) y CSS-class `.substack-error*` ya no usado (cleanup pendiente en estilo si se quiere).
