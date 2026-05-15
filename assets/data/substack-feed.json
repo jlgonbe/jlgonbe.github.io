@@ -1,8 +1,14 @@
 {
   "source": "https://r.jina.ai/https://bitacoradeuningenierodesoftware.substack.com/api/v1/posts?limit=3",
-  "updated_at": "2026-05-14T08:40:49.447Z",
+  "updated_at": "2026-05-15T08:52:07.762Z",
   "count": 3,
   "posts": [
+    {
+      "title": "Para tu próxima PR escrita con IA",
+      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/para-tu-proxima-pr-escrita-con-ia",
+      "pubDate": "2026-05-14T15:32:22.246Z",
+      "description": "15 preguntas antes de darle al Approve con demasiada alegría."
+    },
     {
       "title": "Shit in, shit out",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/shit-in-shit-out",
@@ -14,12 +20,6 @@
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/requisitos-vagos-desastre-asegurado",
       "pubDate": "2026-04-19T08:00:44.749Z",
       "description": "Construir rápido el sistema equivocado sigue siendo construir el sistema equivocado."
-    },
-    {
-      "title": "La farmacéutica que no quería pensar demasiado",
-      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/la-farmaceutica-que-no-queria-pensar",
-      "pubDate": "2026-04-05T08:01:01.021Z",
-      "description": "En un equipo no hay un único “buen dev”; hay motivaciones distintas que, bien encajadas, hacen que todo funcione."
     }
   ]
 }
