@@ -1,8 +1,14 @@
 {
   "source": "https://r.jina.ai/https://bitacoradeuningenierodesoftware.substack.com/api/v1/posts?limit=3",
-  "updated_at": "2026-05-16T08:07:59.070Z",
+  "updated_at": "2026-05-17T08:24:14.678Z",
   "count": 3,
   "posts": [
+    {
+      "title": "Arquitectura de castillos en el aire",
+      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/arquitectura-de-castillos-en-el-aire",
+      "pubDate": "2026-05-17T08:01:22.953Z",
+      "description": "(y otras formas creativas de complicar lo simple)"
+    },
     {
       "title": "Para tu próxima PR escrita con IA",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/para-tu-proxima-pr-escrita-con-ia",
@@ -14,12 +20,6 @@
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/shit-in-shit-out",
       "pubDate": "2026-05-03T08:01:15.459Z",
       "description": "Porque la IA no arregla un pensamiento mediocre"
-    },
-    {
-      "title": "Requisitos vagos, desastre asegurado",
-      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/requisitos-vagos-desastre-asegurado",
-      "pubDate": "2026-04-19T08:00:44.749Z",
-      "description": "Construir rápido el sistema equivocado sigue siendo construir el sistema equivocado."
     }
   ]
 }
