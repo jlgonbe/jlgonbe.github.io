@@ -1,8 +1,14 @@
 {
   "source": "https://r.jina.ai/https://bitacoradeuningenierodesoftware.substack.com/api/v1/posts?limit=3",
-  "updated_at": "2026-06-06T08:35:56.535Z",
+  "updated_at": "2026-06-07T09:16:22.069Z",
   "count": 3,
   "posts": [
+    {
+      "title": "Tu carrera no se jodió en un día",
+      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/tu-carrera-no-se-jodio-en-un-dia",
+      "pubDate": "2026-06-07T08:00:44.086Z",
+      "description": "Se jodió en muchas mini decisiones que no tomaste."
+    },
     {
       "title": "Arquitectura de castillos en el aire",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/arquitectura-de-castillos-en-el-aire",
@@ -14,12 +20,6 @@
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/para-tu-proxima-pr-escrita-con-ia",
       "pubDate": "2026-05-14T15:32:22.246Z",
       "description": "15 preguntas antes de darle al Approve con demasiada alegría."
-    },
-    {
-      "title": "Shit in, shit out",
-      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/shit-in-shit-out",
-      "pubDate": "2026-05-03T08:01:15.459Z",
-      "description": "Porque la IA no arregla un pensamiento mediocre"
     }
   ]
 }
