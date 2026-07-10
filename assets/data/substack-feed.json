@@ -1,12 +1,12 @@
 {
   "source": "https://r.jina.ai/https://bitacoradeuningenierodesoftware.substack.com/api/v1/posts?limit=3",
-  "updated_at": "2026-07-09T09:47:44.328Z",
+  "updated_at": "2026-07-10T09:38:32.020Z",
   "count": 3,
   "posts": [
     {
       "title": "El trabajo que nadie mide",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/el-trabajo-que-nadie-mide",
-      "pubDate": "2026-07-05T08:01:59.885Z",
+      "pubDate": "2026-07-05T08:01:59.884Z",
       "description": "La confianza, el criterio y el pegamento del equipo también entregan."
     },
     {
@@ -18,7 +18,7 @@
     {
       "title": "Tu carrera no se jodió en un día",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/tu-carrera-no-se-jodio-en-un-dia",
-      "pubDate": "2026-06-07T08:00:44.086Z",
+      "pubDate": "2026-06-07T08:00:44.085Z",
       "description": "Se jodió en muchas mini decisiones que no tomaste."
     }
   ]
