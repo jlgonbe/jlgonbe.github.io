@@ -18,7 +18,7 @@ Sitio estático construido con **HTML5, CSS3 y JavaScript vanilla**. Sin framewo
 - **🎨 CSS personalizado** — Sin frameworks, paleta sobria (`#E5E7EB` / `#1C1C1C` / `#1F3B4D` / `#9AC8E2`) + paleta editorial Bitácora (`--bitacora-bg #f4f1e1` / `--bitacora-ink #1a1a1a` / `--bitacora-accent #3e8e41` / `--bitacora-warm #e8a87c` / `--bitacora-line #e6e1cf`)
 - **📱 Responsive** — Mobile-first, validado en 320 / 375 / 768 / 1280 px
 - **📰 Bloque Bitácora destacado** — Manifiesto enfocado a IA + 4 pain points "¿Te suena?" con iconos SVG + iframe Substack (580px) + últimas entradas con paleta editorial unificada (Lora título / Inter fecha / accent verde)
-- **🤖 Feed Substack vía GitHub Action** — JSON estático refrescado 1×/día con cadena de fallback de 3 capas (RSS → API JSON directa → proxy `r.jina.ai`), sin dependencias de proxies CORS de terceros en el navegador
+- **🤖 Feed Substack vía GitHub Action** — JSON estático refrescado 1×/día con cadena de fallback de 4 capas (RSS → API JSON directa → proxy `rss2json` → proxy `r.jina.ai`), sin dependencias de proxies CORS de terceros en el navegador
 - **🚀 Despliegue Pages vía workflow propio** — `pages.yml` con actions Node 24 (sin warnings de Node 20 deprecation)
 - **🔍 SEO + OG + Twitter Cards** — Meta tags completos, OG image 1200×630, canonical, manifest, favicons multi-tamaño
 - **🖼️ Imágenes optimizadas** — `<picture>` con WebP + JPEG fallback (~3.5 MB ahorrados respecto a la versión anterior)
@@ -91,12 +91,13 @@ jlgonbe.github.io/
 
 ### 📡 Feed de Substack (sin proxies de terceros en el navegador)
 
-- **Fuentes (cadena de fallback de 3 capas)**:
+- **Fuentes (cadena de fallback de 4 capas)**:
   1. **RSS** oficial de [bitacoradeuningenierodesoftware.substack.com/feed](https://bitacoradeuningenierodesoftware.substack.com/feed) con User-Agent de navegador.
   2. **API JSON** directa: `https://bitacoradeuningenierodesoftware.substack.com/api/v1/posts?limit=3`.
-  3. **Proxy `r.jina.ai`** sobre la URL de la API (`https://r.jina.ai/<API_URL>`) con header `X-Return-Format: text`, desempaquetando `wrapper.data.text` y re-parseando JSON. Plan B cuando Substack bloquea IPs de GitHub Actions con HTTP 403.
+  3. **`rss2json`** (`https://api.rss2json.com/v1/api.json?rss_url=<FEED>`, keyless) — proxy de lectura server-side: Substack ve la IP de rss2json, no la del runner, por lo que sortea el bloqueo 403 por reputación de IP de datacenter. Capa fiable en CI.
+  4. **Proxy `r.jina.ai`** sobre la URL de la API (`https://r.jina.ai/<API_URL>`) con header `X-Return-Format: text`, desempaquetando `wrapper.data.text` y re-parseando JSON. Usa `JINA_API_KEY` (secret opcional) para subir el rate limit.
 - **Refresco**: GitHub Action `refresh-substack-feed.yml` ejecuta `scripts/refresh-substack-feed.mjs` 1 vez al día a las 06:00 UTC (cron `0 6 * * *`) y bajo demanda (`workflow_dispatch`).
-- **Salida**: `assets/data/substack-feed.json` con las 3 últimas entradas (`title`, `link`, `pubDate`, `description`) + metadatos `source` (rss / api / jina) y `fetchedAt`.
+- **Salida**: `assets/data/substack-feed.json` con las 3 últimas entradas (`title`, `link`, `pubDate` en ISO 8601, `description`) + metadatos `source` y `updated_at`.
 - **Commit del bot**: el workflow commitea con `[skip ci]` para evitar loops; usa `concurrency` para serializar runs.
 - **Frontend**: `main.js` hace `fetch('assets/data/substack-feed.json')` con `AbortController` (timeout 10s) y renderiza con `textContent` (XSS-safe).
 - **Fallback graceful frontend**: si el JSON falla a cargar o llega vacío, se oculta la lista de posts y se muestra solo el CTA "Suscribirse" + "Leer más en la Bitácora".

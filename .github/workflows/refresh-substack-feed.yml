@@ -26,6 +26,10 @@ jobs:
           node-version: "24"
 
       - name: Refresh feed JSON
+        env:
+          # Opcional: si se define el secret, sube el rate limit del proxy Jina
+          # (capa 4). Si no existe, se evalúa a cadena vacía y la capa Jina va anónima.
+          JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
         run: node scripts/refresh-substack-feed.mjs
 
       - name: Commit changes if any

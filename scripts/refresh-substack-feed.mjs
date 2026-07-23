@@ -10,6 +10,10 @@ const SUBSTACK_USERNAME = "bitacoradeuningenierodesoftware";
 const FEED_URL = `https://${SUBSTACK_USERNAME}.substack.com/feed`;
 const API_URL = `https://${SUBSTACK_USERNAME}.substack.com/api/v1/posts?limit=3`;
 const JINA_PROXY_URL = `https://r.jina.ai/${API_URL}`;
+// rss2json: proxy server-side de lectura RSS→JSON. Substack ve la IP de rss2json
+// (no la del runner de GitHub Actions), por lo que sortea el bloqueo 403 por
+// reputación de IP de datacenter. Keyless funciona de sobra para 1 refresh/día.
+const RSS2JSON_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(FEED_URL)}`;
 const OUTPUT_PATH = resolve(ROOT, "assets/data/substack-feed.json");
 const MAX_POSTS = 3;
 const REQUEST_TIMEOUT_MS = 15_000;
@@ -32,7 +36,9 @@ function decodeHtmlEntities(str) {
 function extractCData(raw) {
     if (!raw) return "";
     const cdataMatch = raw.match(/<!\[CDATA\[([\s\S]*?)\]\]>/);
-    if (cdataMatch) return cdataMatch[1].trim();
+    // Substack codifica entidades HTML (&#243; etc.) también dentro de CDATA;
+    // decodificar aquí garantiza texto limpio sea cual sea la capa que gane.
+    if (cdataMatch) return decodeHtmlEntities(cdataMatch[1].trim());
     return decodeHtmlEntities(raw.trim());
 }
 
@@ -50,7 +56,7 @@ function parseRssItems(xml) {
         const itemXml = match[1];
         const title = extractField(itemXml, "title");
         const link = extractField(itemXml, "link");
-        const pubDate = extractField(itemXml, "pubDate");
+        const pubDate = toIsoDate(extractField(itemXml, "pubDate"));
         const description = extractField(itemXml, "description");
         if (title && link) items.push({ title, link, pubDate, description });
     }
@@ -64,8 +70,29 @@ function mapApiPosts(json) {
         .map((p) => ({
             title: p.title,
             link: p.canonical_url,
-            pubDate: p.post_date || "",
+            pubDate: toIsoDate(p.post_date),
             description: p.description || p.subtitle || "",
+        }));
+}
+
+// Normaliza fechas heterogéneas (RFC822, ISO, "YYYY-MM-DD HH:MM:SS") a ISO 8601.
+// Si no se puede parsear, devuelve el valor original (main.js tolera ambos).
+function toIsoDate(value) {
+    if (!value) return "";
+    const normalized = value.includes(" ") && !value.includes("T") ? `${value.replace(" ", "T")}Z` : value;
+    const date = new Date(normalized);
+    return Number.isNaN(date.getTime()) ? value : date.toISOString();
+}
+
+function mapRss2Json(json) {
+    if (!json || json.status !== "ok" || !Array.isArray(json.items)) return [];
+    return json.items
+        .filter((p) => p && p.title && p.link)
+        .map((p) => ({
+            title: p.title,
+            link: p.link,
+            pubDate: toIsoDate(p.pubDate),
+            description: p.description || "",
         }));
 }
 
@@ -92,31 +119,47 @@ async function fetchWithTimeout(url, { timeoutMs = REQUEST_TIMEOUT_MS, accept, e
 }
 
 async function tryRss() {
-    console.log(`[1/3] Trying RSS: ${FEED_URL}`);
+    console.log(`[1/4] Trying RSS: ${FEED_URL}`);
     const xml = await fetchWithTimeout(FEED_URL, {
         accept: "application/rss+xml, application/xml, text/xml, */*",
     });
     const items = parseRssItems(xml);
     if (items.length === 0) throw new Error("RSS parsed 0 items");
-    console.log(`[1/3] RSS OK: ${items.length} items`);
+    console.log(`[1/4] RSS OK: ${items.length} items`);
     return { source: FEED_URL, items };
 }
 
 async function tryApi() {
-    console.log(`[2/3] Trying API direct: ${API_URL}`);
+    console.log(`[2/4] Trying API direct: ${API_URL}`);
     const text = await fetchWithTimeout(API_URL, { accept: "application/json" });
     const json = JSON.parse(text);
     const items = mapApiPosts(json);
     if (items.length === 0) throw new Error("API returned 0 items");
-    console.log(`[2/3] API OK: ${items.length} items`);
+    console.log(`[2/4] API OK: ${items.length} items`);
     return { source: API_URL, items };
 }
 
+async function tryRss2Json() {
+    console.log(`[3/4] Trying rss2json: ${RSS2JSON_URL}`);
+    const text = await fetchWithTimeout(RSS2JSON_URL, { accept: "application/json" });
+    const json = JSON.parse(text);
+    const items = mapRss2Json(json);
+    if (items.length === 0) throw new Error(`rss2json returned 0 items (status: ${json?.status})`);
+    console.log(`[3/4] rss2json OK: ${items.length} items`);
+    return { source: RSS2JSON_URL, items };
+}
+
 async function tryJinaProxy() {
-    console.log(`[3/3] Trying Jina proxy: ${JINA_PROXY_URL}`);
+    console.log(`[4/4] Trying Jina proxy: ${JINA_PROXY_URL}`);
+    // JINA_API_KEY (opcional, GitHub Secret) sube el rate limit y evita el 403
+    // que Jina devuelve a peticiones anónimas desde IPs compartidas de CI.
+    const extraHeaders = { "X-Return-Format": "text" };
+    if (process.env.JINA_API_KEY) {
+        extraHeaders.Authorization = `Bearer ${process.env.JINA_API_KEY}`;
+    }
     const text = await fetchWithTimeout(JINA_PROXY_URL, {
         accept: "application/json",
-        extraHeaders: { "X-Return-Format": "text" },
+        extraHeaders,
     });
     // Jina wraps the upstream response: { code, status, data: { text: "<stringified-substack-json>" } }
     // We must unwrap .data.text and re-parse it to get the original Substack array.
@@ -128,14 +171,18 @@ async function tryJinaProxy() {
     const json = JSON.parse(inner);
     const items = mapApiPosts(json);
     if (items.length === 0) throw new Error("Jina proxy returned 0 items");
-    console.log(`[3/3] Jina OK: ${items.length} items`);
+    console.log(`[4/4] Jina OK: ${items.length} items`);
     return { source: JINA_PROXY_URL, items };
 }
 
 async function main() {
+    // Orden por fiabilidad desde CI: primero las rutas directas gratuitas (funcionan
+    // cuando la IP del runner está limpia); luego proxies server-side que sortean el
+    // bloqueo 403 por reputación de IP de datacenter (Substack ve la IP del proxy).
     const strategies = [
         { name: "RSS", fn: tryRss },
         { name: "API direct", fn: tryApi },
+        { name: "rss2json", fn: tryRss2Json },
         { name: "Jina proxy", fn: tryJinaProxy },
     ];
 

@@ -1,24 +1,24 @@
 {
-  "source": "https://r.jina.ai/https://bitacoradeuningenierodesoftware.substack.com/api/v1/posts?limit=3",
-  "updated_at": "2026-07-22T08:31:48.814Z",
+  "source": "https://bitacoradeuningenierodesoftware.substack.com/feed",
+  "updated_at": "2026-07-23T10:22:43.573Z",
   "count": 3,
   "posts": [
     {
       "title": "Picar código ya no se paga bien",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/picar-codigo-ya-no-se-paga-bien",
-      "pubDate": "2026-07-19T08:00:55.028Z",
+      "pubDate": "2026-07-19T08:00:55.000Z",
       "description": "La IA puede generar código en segundos. El oficio está en demostrar que merece entrar en producción."
     },
     {
       "title": "El trabajo que nadie mide",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/el-trabajo-que-nadie-mide",
-      "pubDate": "2026-07-05T08:01:59.884Z",
+      "pubDate": "2026-07-05T08:01:59.000Z",
       "description": "La confianza, el criterio y el pegamento del equipo también entregan."
     },
     {
       "title": "La IA sí que va a quitarte tu trabajo (tal y como lo conoces ahora)",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/la-ia-si-que-va-a-quitarte-tu-trabajo",
-      "pubDate": "2026-06-21T08:01:18.200Z",
+      "pubDate": "2026-06-21T08:01:18.000Z",
       "description": "Cómo dejar de tratarla como magia y empezar a revisarle el código como a cualquier otro compañero."
     }
   ]
