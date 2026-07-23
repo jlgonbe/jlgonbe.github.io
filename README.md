@@ -58,7 +58,8 @@ jlgonbe.github.io/
 │   ├── favicon.ico
 │   ├── favicon-{16,32,192,512}.png
 │   └── apple-touch-icon.png
-├── .sisyphus/plans/                 # Plans de realineamiento de marca
+├── AGENTS.md                        # Contexto operativo para agentes de IA
+├── DECISIONS.md                     # Registro de decisiones de diseño/marca
 └── README.md
 ```
 

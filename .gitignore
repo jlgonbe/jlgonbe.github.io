@@ -1,0 +1,6 @@
+# Directorios de herramientas de agentes (no versionar)
+.sisyphus/
+.omo/
+
+# macOS
+.DS_Store
