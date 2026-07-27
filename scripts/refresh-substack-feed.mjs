@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { writeFile, mkdir } from "node:fs/promises";
+import { writeFile, readFile, mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -17,6 +17,17 @@ const RSS2JSON_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURICo
 const OUTPUT_PATH = resolve(ROOT, "assets/data/substack-feed.json");
 const MAX_POSTS = 3;
 const REQUEST_TIMEOUT_MS = 15_000;
+// Nivel 1: reintentos ante fallos transitorios. MAX_ATTEMPTS incluye el intento
+// inicial (1) + reintentos. RETRY_BACKOFF_MS[i] es la espera antes del reintento i+1.
+const MAX_ATTEMPTS = 3;
+const RETRY_BACKOFF_MS = [2_000, 5_000];
+// Solo reintentamos ante estos status (transitorios) o timeout. Un 403/404 es un
+// bloqueo estable → no reintentar, saltar de capa de inmediato.
+const RETRYABLE_STATUS = new Set([429, 500, 502, 503, 504]);
+// Nivel 2: si todas las capas fallan pero el snapshot en disco es más reciente que
+// esto, el run NO se marca como fallido (evita emails por baches transitorios de
+// proxy). Solo falla (exit 1) si el snapshot no existe o ya es obsoleto.
+const STALE_SNAPSHOT_MAX_DAYS = 7;
 const BROWSER_UA =
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
 
@@ -110,7 +121,9 @@ async function fetchWithTimeout(url, { timeoutMs = REQUEST_TIMEOUT_MS, accept, e
             },
         });
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status} ${response.statusText}`);
+            const err = new Error(`HTTP ${response.status} ${response.statusText}`);
+            err.status = response.status;
+            throw err;
         }
         return await response.text();
     } finally {
@@ -118,11 +131,45 @@ async function fetchWithTimeout(url, { timeoutMs = REQUEST_TIMEOUT_MS, accept, e
     }
 }
 
+const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Un fallo es reintentable si es un timeout (AbortError) o un status transitorio.
+// Ante un status estable (403/404) o un error de red sin status, no reintentamos.
+function isRetryable(err) {
+    if (err?.name === "AbortError") return true;
+    if (typeof err?.status === "number") return RETRYABLE_STATUS.has(err.status);
+    return false;
+}
+
+// Nivel 1: envuelve fetchWithTimeout con reintentos + backoff para fallos transitorios.
+async function fetchWithRetry(url, opts = {}, label = "request") {
+    let lastError;
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+        try {
+            return await fetchWithTimeout(url, opts);
+        } catch (err) {
+            lastError = err;
+            if (attempt < MAX_ATTEMPTS && isRetryable(err)) {
+                const waitMs = RETRY_BACKOFF_MS[attempt - 1];
+                console.warn(
+                    `retry ${attempt}/${MAX_ATTEMPTS - 1} for ${label} after ${waitMs}ms (${err.message})`,
+                );
+                await delay(waitMs);
+                continue;
+            }
+            throw err;
+        }
+    }
+    throw lastError;
+}
+
 async function tryRss() {
     console.log(`[1/4] Trying RSS: ${FEED_URL}`);
-    const xml = await fetchWithTimeout(FEED_URL, {
-        accept: "application/rss+xml, application/xml, text/xml, */*",
-    });
+    const xml = await fetchWithRetry(
+        FEED_URL,
+        { accept: "application/rss+xml, application/xml, text/xml, */*" },
+        "RSS",
+    );
     const items = parseRssItems(xml);
     if (items.length === 0) throw new Error("RSS parsed 0 items");
     console.log(`[1/4] RSS OK: ${items.length} items`);
@@ -131,7 +178,7 @@ async function tryRss() {
 
 async function tryApi() {
     console.log(`[2/4] Trying API direct: ${API_URL}`);
-    const text = await fetchWithTimeout(API_URL, { accept: "application/json" });
+    const text = await fetchWithRetry(API_URL, { accept: "application/json" }, "API direct");
     const json = JSON.parse(text);
     const items = mapApiPosts(json);
     if (items.length === 0) throw new Error("API returned 0 items");
@@ -141,7 +188,7 @@ async function tryApi() {
 
 async function tryRss2Json() {
     console.log(`[3/4] Trying rss2json: ${RSS2JSON_URL}`);
-    const text = await fetchWithTimeout(RSS2JSON_URL, { accept: "application/json" });
+    const text = await fetchWithRetry(RSS2JSON_URL, { accept: "application/json" }, "rss2json");
     const json = JSON.parse(text);
     const items = mapRss2Json(json);
     if (items.length === 0) throw new Error(`rss2json returned 0 items (status: ${json?.status})`);
@@ -157,10 +204,11 @@ async function tryJinaProxy() {
     if (process.env.JINA_API_KEY) {
         extraHeaders.Authorization = `Bearer ${process.env.JINA_API_KEY}`;
     }
-    const text = await fetchWithTimeout(JINA_PROXY_URL, {
-        accept: "application/json",
-        extraHeaders,
-    });
+    const text = await fetchWithRetry(
+        JINA_PROXY_URL,
+        { accept: "application/json", extraHeaders },
+        "Jina proxy",
+    );
     // Jina wraps the upstream response: { code, status, data: { text: "<stringified-substack-json>" } }
     // We must unwrap .data.text and re-parse it to get the original Substack array.
     const wrapper = JSON.parse(text);
@@ -173,6 +221,45 @@ async function tryJinaProxy() {
     if (items.length === 0) throw new Error("Jina proxy returned 0 items");
     console.log(`[4/4] Jina OK: ${items.length} items`);
     return { source: JINA_PROXY_URL, items };
+}
+
+// Nivel 2: cuando TODAS las capas fallan, no sobreescribimos nada. Si el snapshot
+// en disco sigue fresco (< STALE_SNAPSHOT_MAX_DAYS), salimos 0 con un ::warning::
+// para no marcar el run como fallido por un bache transitorio de proxy. Solo salimos
+// con exit 1 (run rojo + email) si el snapshot no existe/es inválido o ya es obsoleto.
+async function handleAllStrategiesFailed(lastError) {
+    const reason = `All strategies failed. Last error: ${lastError?.message}`;
+
+    let snapshot = null;
+    try {
+        snapshot = JSON.parse(await readFile(OUTPUT_PATH, "utf8"));
+    } catch {
+        snapshot = null;
+    }
+
+    const updatedAtMs = snapshot?.updated_at ? Date.parse(snapshot.updated_at) : Number.NaN;
+    const hasValidSnapshot =
+        snapshot &&
+        Number.isInteger(snapshot.count) &&
+        snapshot.count > 0 &&
+        !Number.isNaN(updatedAtMs);
+
+    if (hasValidSnapshot) {
+        const ageDays = (Date.now() - updatedAtMs) / 86_400_000;
+        if (ageDays < STALE_SNAPSHOT_MAX_DAYS) {
+            // ::warning:: se emite por stdout para que GitHub Actions lo capture como aviso.
+            console.log(
+                `::warning::${reason} Snapshot vigente (${ageDays.toFixed(1)}d < ${STALE_SNAPSHOT_MAX_DAYS}d); se conserva y el run no falla.`,
+            );
+            return;
+        }
+        console.error(
+            `${reason} Snapshot obsoleto (${ageDays.toFixed(1)}d >= ${STALE_SNAPSHOT_MAX_DAYS}d).`,
+        );
+    } else {
+        console.error(`${reason} No hay snapshot válido en disco sobre el que degradar.`);
+    }
+    process.exit(1);
 }
 
 async function main() {
@@ -199,7 +286,8 @@ async function main() {
     }
 
     if (!result) {
-        throw new Error(`All strategies failed. Last error: ${lastError?.message}`);
+        await handleAllStrategiesFailed(lastError);
+        return;
     }
 
     const posts = result.items.slice(0, MAX_POSTS);
