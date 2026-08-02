@@ -1,8 +1,14 @@
 {
   "source": "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fbitacoradeuningenierodesoftware.substack.com%2Ffeed",
-  "updated_at": "2026-08-01T08:23:31.273Z",
+  "updated_at": "2026-08-02T08:26:16.957Z",
   "count": 3,
   "posts": [
+    {
+      "title": "¿Qué tienen en común Excel y la IA?",
+      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/que-tienen-en-comun-excel-y-la-ia",
+      "pubDate": "2026-08-02T08:00:37.000Z",
+      "description": "Tienen en común más de lo que te conviene, ¿no me crees?"
+    },
     {
       "title": "Picar código ya no se paga bien",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/picar-codigo-ya-no-se-paga-bien",
@@ -14,12 +20,6 @@
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/el-trabajo-que-nadie-mide",
       "pubDate": "2026-07-05T08:01:59.000Z",
       "description": "La confianza, el criterio y el pegamento del equipo también entregan."
-    },
-    {
-      "title": "La IA sí que va a quitarte tu trabajo (tal y como lo conoces ahora)",
-      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/la-ia-si-que-va-a-quitarte-tu-trabajo",
-      "pubDate": "2026-06-21T08:01:18.000Z",
-      "description": "Cómo dejar de tratarla como magia y empezar a revisarle el código como a cualquier otro compañero."
     }
   ]
 }
