@@ -1,8 +1,14 @@
 {
   "source": "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fbitacoradeuningenierodesoftware.substack.com%2Ffeed",
-  "updated_at": "2026-08-16T06:41:41.225Z",
+  "updated_at": "2026-08-17T06:58:05.541Z",
   "count": 3,
   "posts": [
+    {
+      "title": "El Arnés de la IA",
+      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/el-arnes-de-la-ia",
+      "pubDate": "2026-08-16T08:01:47.000Z",
+      "description": "Cambias de modelo cada dos semanas buscando mejores resultados. Y el problema casi nunca está en el modelo: es todo lo que lo rodea."
+    },
     {
       "title": "¿Qué tienen en común Excel y la IA?",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/que-tienen-en-comun-excel-y-la-ia",
@@ -14,12 +20,6 @@
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/picar-codigo-ya-no-se-paga-bien",
       "pubDate": "2026-07-19T08:00:55.000Z",
       "description": "La IA puede generar código en segundos. El oficio está en demostrar que merece entrar en producción."
-    },
-    {
-      "title": "El trabajo que nadie mide",
-      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/el-trabajo-que-nadie-mide",
-      "pubDate": "2026-07-05T08:01:59.000Z",
-      "description": "La confianza, el criterio y el pegamento del equipo también entregan."
     }
   ]
 }
