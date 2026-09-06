@@ -1,8 +1,14 @@
 {
   "source": "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fbitacoradeuningenierodesoftware.substack.com%2Ffeed",
-  "updated_at": "2026-09-05T10:08:32.139Z",
+  "updated_at": "2026-09-06T10:29:26.246Z",
   "count": 3,
   "posts": [
+    {
+      "title": "Las 13 leyes de ingeniería de software que todo líder técnico debería conocer",
+      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/las-13-leyes-de-ingenieria-de-software",
+      "pubDate": "2026-09-06T08:01:17.000Z",
+      "description": "Por qué la mitad de tus problemas de equipo ya tenían nombre y apellido desde los años setenta"
+    },
     {
       "title": "El Arnés de la IA",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/el-arnes-de-la-ia",
@@ -14,12 +20,6 @@
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/que-tienen-en-comun-excel-y-la-ia",
       "pubDate": "2026-08-02T08:00:37.000Z",
       "description": "Tienen en común más de lo que te conviene, ¿no me crees?"
-    },
-    {
-      "title": "Picar código ya no se paga bien",
-      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/picar-codigo-ya-no-se-paga-bien",
-      "pubDate": "2026-07-19T08:00:55.000Z",
-      "description": "La IA puede generar código en segundos. El oficio está en demostrar que merece entrar en producción."
     }
   ]
 }
