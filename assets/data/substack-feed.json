@@ -1,8 +1,14 @@
 {
   "source": "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fbitacoradeuningenierodesoftware.substack.com%2Ffeed",
-  "updated_at": "2026-09-19T10:29:34.209Z",
+  "updated_at": "2026-09-20T10:51:30.124Z",
   "count": 3,
   "posts": [
+    {
+      "title": "¿Por qué las migraciones nunca se acaban?",
+      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/por-que-las-migraciones-nunca-se",
+      "pubDate": "2026-09-20T08:01:42.000Z",
+      "description": "Yo mantenía una dependencia de un sistema que quisieron apagar de golpe. Tardaron cinco años."
+    },
     {
       "title": "Las 13 leyes de ingeniería de software que todo líder técnico debería conocer",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/las-13-leyes-de-ingenieria-de-software",
@@ -14,12 +20,6 @@
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/el-arnes-de-la-ia",
       "pubDate": "2026-08-16T08:01:47.000Z",
       "description": "Cambias de modelo cada dos semanas buscando mejores resultados. Y el problema casi nunca está en el modelo: es todo lo que lo rodea."
-    },
-    {
-      "title": "¿Qué tienen en común Excel y la IA?",
-      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/que-tienen-en-comun-excel-y-la-ia",
-      "pubDate": "2026-08-02T08:00:37.000Z",
-      "description": "Tienen en común más de lo que te conviene, ¿no me crees?"
     }
   ]
 }
