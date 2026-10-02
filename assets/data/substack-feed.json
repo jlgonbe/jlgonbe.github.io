@@ -1,24 +1,24 @@
 {
-  "source": "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fbitacoradeuningenierodesoftware.substack.com%2Ffeed",
-  "updated_at": "2026-10-01T12:39:34.679Z",
+  "source": "https://r.jina.ai/https://bitacoradeuningenierodesoftware.substack.com/api/v1/posts?limit=3",
+  "updated_at": "2026-10-02T12:04:09.352Z",
   "count": 3,
   "posts": [
     {
       "title": "¿Por qué las migraciones nunca se acaban?",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/por-que-las-migraciones-nunca-se",
-      "pubDate": "2026-09-20T08:01:42.000Z",
+      "pubDate": "2026-09-20T08:01:42.654Z",
       "description": "Yo mantenía una dependencia de un sistema que quisieron apagar de golpe. Tardaron cinco años."
     },
     {
       "title": "Las 13 leyes de ingeniería de software que todo líder técnico debería conocer",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/las-13-leyes-de-ingenieria-de-software",
-      "pubDate": "2026-09-06T08:01:17.000Z",
+      "pubDate": "2026-09-06T08:01:17.398Z",
       "description": "Por qué la mitad de tus problemas de equipo ya tenían nombre y apellido desde los años setenta"
     },
     {
       "title": "El Arnés de la IA",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/el-arnes-de-la-ia",
-      "pubDate": "2026-08-16T08:01:47.000Z",
+      "pubDate": "2026-08-16T08:01:47.705Z",
       "description": "Cambias de modelo cada dos semanas buscando mejores resultados. Y el problema casi nunca está en el modelo: es todo lo que lo rodea."
     }
   ]
