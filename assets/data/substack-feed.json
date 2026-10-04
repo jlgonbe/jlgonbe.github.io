@@ -1,8 +1,14 @@
 {
   "source": "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fbitacoradeuningenierodesoftware.substack.com%2Ffeed",
-  "updated_at": "2026-10-03T11:16:02.798Z",
+  "updated_at": "2026-10-04T11:55:48.217Z",
   "count": 3,
   "posts": [
+    {
+      "title": "La factura oculta del código que no escribiste",
+      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/por-que-las-migraciones-nunca-se-a19",
+      "pubDate": "2026-10-04T08:03:17.000Z",
+      "description": "Aprobé cambios sin mirarlos. Todavía no me ha explotado en la cara, y eso es exactamente lo que me preocupa."
+    },
     {
       "title": "¿Por qué las migraciones nunca se acaban?",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/por-que-las-migraciones-nunca-se",
@@ -14,12 +20,6 @@
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/las-13-leyes-de-ingenieria-de-software",
       "pubDate": "2026-09-06T08:01:17.000Z",
       "description": "Por qué la mitad de tus problemas de equipo ya tenían nombre y apellido desde los años setenta"
-    },
-    {
-      "title": "El Arnés de la IA",
-      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/el-arnes-de-la-ia",
-      "pubDate": "2026-08-16T08:01:47.000Z",
-      "description": "Cambias de modelo cada dos semanas buscando mejores resultados. Y el problema casi nunca está en el modelo: es todo lo que lo rodea."
     }
   ]
 }
