@@ -1,24 +1,24 @@
 {
-  "source": "https://r.jina.ai/https://bitacoradeuningenierodesoftware.substack.com/api/v1/posts?limit=3",
-  "updated_at": "2026-10-29T12:28:32.750Z",
+  "source": "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fbitacoradeuningenierodesoftware.substack.com%2Ffeed",
+  "updated_at": "2026-10-30T12:20:18.566Z",
   "count": 3,
   "posts": [
     {
       "title": "Hice una app que funcionaba y no tenía ni idea de cómo",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/hice-una-app-que-funcionaba-y-no",
-      "pubDate": "2026-10-18T08:02:08.888Z",
+      "pubDate": "2026-10-18T08:02:08.000Z",
       "description": "La monté con IA en una hora. Lo difícil llegó cuando me preguntaron cómo la había hecho."
     },
     {
       "title": "La factura oculta del código que no escribiste",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/por-que-las-migraciones-nunca-se-a19",
-      "pubDate": "2026-10-04T08:03:17.398Z",
+      "pubDate": "2026-10-04T08:03:17.000Z",
       "description": "Aprobé cambios sin mirarlos. Todavía no me ha explotado en la cara, y eso es exactamente lo que me preocupa."
     },
     {
       "title": "¿Por qué las migraciones nunca se acaban?",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/por-que-las-migraciones-nunca-se",
-      "pubDate": "2026-09-20T08:01:42.654Z",
+      "pubDate": "2026-09-20T08:01:42.000Z",
       "description": "Yo mantenía una dependencia de un sistema que quisieron apagar de golpe. Tardaron cinco años."
     }
   ]
