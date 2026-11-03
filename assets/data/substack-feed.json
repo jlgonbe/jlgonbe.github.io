@@ -1,8 +1,14 @@
 {
   "source": "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fbitacoradeuningenierodesoftware.substack.com%2Ffeed",
-  "updated_at": "2026-10-30T12:20:18.566Z",
+  "updated_at": "2026-11-03T13:47:40.494Z",
   "count": 3,
   "posts": [
+    {
+      "title": "Acabo el día con la cabeza a punto de explotar",
+      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/acabo-el-dia-con-la-cabeza-a-punto",
+      "pubDate": "2026-11-01T09:00:54.000Z",
+      "description": "Lanzo 3 o 4 agentes a la vez y lo que me revienta es revisar. Por eso he decidido frenar."
+    },
     {
       "title": "Hice una app que funcionaba y no tenía ni idea de cómo",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/hice-una-app-que-funcionaba-y-no",
@@ -14,12 +20,6 @@
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/por-que-las-migraciones-nunca-se-a19",
       "pubDate": "2026-10-04T08:03:17.000Z",
       "description": "Aprobé cambios sin mirarlos. Todavía no me ha explotado en la cara, y eso es exactamente lo que me preocupa."
-    },
-    {
-      "title": "¿Por qué las migraciones nunca se acaban?",
-      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/por-que-las-migraciones-nunca-se",
-      "pubDate": "2026-09-20T08:01:42.000Z",
-      "description": "Yo mantenía una dependencia de un sistema que quisieron apagar de golpe. Tardaron cinco años."
     }
   ]
 }
