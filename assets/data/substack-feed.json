@@ -1,8 +1,14 @@
 {
   "source": "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fbitacoradeuningenierodesoftware.substack.com%2Ffeed",
-  "updated_at": "2026-11-18T15:16:58.898Z",
+  "updated_at": "2026-11-19T15:24:04.283Z",
   "count": 3,
   "posts": [
+    {
+      "title": "El día que nuestro sistema cayó y no nos enteramos",
+      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/el-dia-que-nuestro-sistema-cayo-y",
+      "pubDate": "2026-11-15T10:01:39.000Z",
+      "description": "Cientos de usuarios abriendo tickets y nosotros sin saberlo. Lo que me enseñó rotar en soporte."
+    },
     {
       "title": "Acabo el día con la cabeza a punto de explotar",
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/acabo-el-dia-con-la-cabeza-a-punto",
@@ -14,12 +20,6 @@
       "link": "https://bitacoradeuningenierodesoftware.substack.com/p/hice-una-app-que-funcionaba-y-no",
       "pubDate": "2026-10-18T08:02:08.000Z",
       "description": "La monté con IA en una hora. Lo difícil llegó cuando me preguntaron cómo la había hecho."
-    },
-    {
-      "title": "La factura oculta del código que no escribiste",
-      "link": "https://bitacoradeuningenierodesoftware.substack.com/p/por-que-las-migraciones-nunca-se-a19",
-      "pubDate": "2026-10-04T08:03:17.000Z",
-      "description": "Aprobé cambios sin mirarlos. Todavía no me ha explotado en la cara, y eso es exactamente lo que me preocupa."
     }
   ]
 }
